@@ -21,14 +21,9 @@ public class ChildTestRecordSupabaseService {
     private final ChildTestRecordSupabaseRepository childTestRecordSupabaseRepository;
 
     public ChildTestRecordSupabaseDto createChildTestRecord(ChildTestRecordSupabaseDto childTestRecordDto) {
-        log.info("Creating child test record with external ID: {}", childTestRecordDto.getExternalId());
-
-        if (childTestRecordSupabaseRepository.existsByExternalId(childTestRecordDto.getExternalId())) {
-            throw new RuntimeException("Child test record with external ID " + childTestRecordDto.getExternalId() + " already exists");
-        }
+        log.info("Creating child test record for child ID: {}", childTestRecordDto.getChildId());
 
         ChildTestRecordSupabase childTestRecord = ChildTestRecordSupabase.builder()
-                .externalId(childTestRecordDto.getExternalId())
                 .childId(childTestRecordDto.getChildId())
                 .testId(childTestRecordDto.getTestId())
                 .testType(childTestRecordDto.getTestType() != null ?
@@ -59,13 +54,6 @@ public class ChildTestRecordSupabaseService {
         log.info("Getting child test record by ID: {}", id);
         ChildTestRecordSupabase childTestRecord = childTestRecordSupabaseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Child test record not found with ID: " + id));
-        return convertToDto(childTestRecord);
-    }
-
-    public ChildTestRecordSupabaseDto getChildTestRecordByExternalId(String externalId) {
-        log.info("Getting child test record by external ID: {}", externalId);
-        ChildTestRecordSupabase childTestRecord = childTestRecordSupabaseRepository.findByExternalId(externalId)
-                .orElseThrow(() -> new RuntimeException("Child test record not found with external ID: " + externalId));
         return convertToDto(childTestRecord);
     }
 
@@ -144,7 +132,6 @@ public class ChildTestRecordSupabaseService {
         ChildTestRecordSupabase existingRecord = childTestRecordSupabaseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Child test record not found with ID: " + id));
 
-        existingRecord.setExternalId(childTestRecordDto.getExternalId());
         existingRecord.setChildId(childTestRecordDto.getChildId());
         existingRecord.setTestId(childTestRecordDto.getTestId());
         if (childTestRecordDto.getTestType() != null) {
@@ -180,10 +167,6 @@ public class ChildTestRecordSupabaseService {
         childTestRecordSupabaseRepository.deleteById(id);
     }
 
-    public boolean existsByExternalId(String externalId) {
-        return childTestRecordSupabaseRepository.existsByExternalId(externalId);
-    }
-
     public boolean existsByChildIdAndTestId(Long childId, Long testId) {
         return childTestRecordSupabaseRepository.existsByChildIdAndTestId(childId, testId);
     }
@@ -203,7 +186,6 @@ public class ChildTestRecordSupabaseService {
     private ChildTestRecordSupabaseDto convertToDto(ChildTestRecordSupabase childTestRecord) {
         return ChildTestRecordSupabaseDto.builder()
                 .id(childTestRecord.getId())
-                .externalId(childTestRecord.getExternalId())
                 .childId(childTestRecord.getChildId())
                 .testId(childTestRecord.getTestId())
                 .testType(childTestRecord.getTestType() != null ? childTestRecord.getTestType().name() : null)

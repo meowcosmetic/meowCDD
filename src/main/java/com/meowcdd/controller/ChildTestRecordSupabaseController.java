@@ -16,13 +16,14 @@ import java.util.List;
 @RequestMapping("/supabase/child-test-records")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*")
 public class ChildTestRecordSupabaseController {
 
     private final ChildTestRecordSupabaseService childTestRecordSupabaseService;
 
     @PostMapping
     public ResponseEntity<ChildTestRecordSupabaseDto> createChildTestRecord(@Valid @RequestBody ChildTestRecordSupabaseDto childTestRecordDto) {
-        log.info("Creating child test record (Supabase): {}", childTestRecordDto.getExternalId());
+        log.info("Creating child test record (Supabase) for child ID: {}", childTestRecordDto.getChildId());
         ChildTestRecordSupabaseDto createdRecord = childTestRecordSupabaseService.createChildTestRecord(childTestRecordDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRecord);
     }
@@ -31,13 +32,6 @@ public class ChildTestRecordSupabaseController {
     public ResponseEntity<ChildTestRecordSupabaseDto> getChildTestRecordById(@PathVariable Long id) {
         log.info("Getting child test record by ID (Supabase): {}", id);
         ChildTestRecordSupabaseDto record = childTestRecordSupabaseService.getChildTestRecordById(id);
-        return ResponseEntity.ok(record);
-    }
-
-    @GetMapping("/external/{externalId}")
-    public ResponseEntity<ChildTestRecordSupabaseDto> getChildTestRecordByExternalId(@PathVariable String externalId) {
-        log.info("Getting child test record by external ID (Supabase): {}", externalId);
-        ChildTestRecordSupabaseDto record = childTestRecordSupabaseService.getChildTestRecordByExternalId(externalId);
         return ResponseEntity.ok(record);
     }
 
@@ -130,13 +124,6 @@ public class ChildTestRecordSupabaseController {
         log.info("Deleting child test record with ID (Supabase): {}", id);
         childTestRecordSupabaseService.deleteChildTestRecord(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/exists/{externalId}")
-    public ResponseEntity<Boolean> checkChildTestRecordExists(@PathVariable String externalId) {
-        log.info("Checking if child test record exists with external ID (Supabase): {}", externalId);
-        boolean exists = childTestRecordSupabaseService.existsByExternalId(externalId);
-        return ResponseEntity.ok(exists);
     }
 
     @GetMapping("/child/{childId}/test/{testId}/exists")

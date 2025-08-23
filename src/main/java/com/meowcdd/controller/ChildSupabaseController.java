@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/supabase/children")
+@RequestMapping("/supabase/children")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*")
 public class ChildSupabaseController {
 
     private final ChildSupabaseService childService;
@@ -57,23 +58,22 @@ public class ChildSupabaseController {
     }
 
     /**
-     * Lấy trẻ theo external ID
-     */
-    @GetMapping("/external/{externalId}")
-    public ResponseEntity<ChildSupabase> getChildByExternalId(@PathVariable String externalId) {
-        log.info("Getting child with external id: {}", externalId);
-        Optional<ChildSupabase> child = childService.getChildByExternalId(externalId);
-        return child.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    /**
      * Lấy tất cả trẻ
      */
     @GetMapping
     public ResponseEntity<List<ChildSupabase>> getAllChildren() {
         log.info("Getting all children");
         List<ChildSupabase> children = childService.getAllChildren();
+        return ResponseEntity.ok(children);
+    }
+
+    /**
+     * Lấy trẻ theo parent ID
+     */
+    @GetMapping("/parent/{parentId}")
+    public ResponseEntity<List<ChildSupabase>> getChildrenByParentId(@PathVariable String parentId) {
+        log.info("Getting children by parent id: {}", parentId);
+        List<ChildSupabase> children = childService.getChildrenByParentId(parentId);
         return ResponseEntity.ok(children);
     }
 

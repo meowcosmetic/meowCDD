@@ -8,12 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ChildTestRecordSupabaseRepository extends JpaRepository<ChildTestRecordSupabase, Long> {
-    
-    Optional<ChildTestRecordSupabase> findByExternalId(String externalId);
     
     List<ChildTestRecordSupabase> findByChildId(Long childId);
     
@@ -66,8 +63,6 @@ public interface ChildTestRecordSupabaseRepository extends JpaRepository<ChildTe
     
     @Query("SELECT MAX(ctr.testDate) FROM ChildTestRecordSupabase ctr WHERE ctr.childId = :childId")
     LocalDateTime getLastTestDateByChildId(@Param("childId") Long childId);
-    
-    boolean existsByExternalId(String externalId);
     
     boolean existsByChildIdAndTestId(Long childId, Long testId);
 }

@@ -1,0 +1,21 @@
+{
+  "parentId": "68a85732aef15b0165a40f75",
+  "fullName": "Nguyễn Hoàng Minh",
+  "gender": "MALE",
+  "dateOfBirth": "2020-03-15",
+  "isPremature": false,
+  "gestationalWeek": null,
+  "birthWeightGrams": 3200,
+  "specialMedicalConditions": "Không có tình trạng y tế đặc biệt",
+  "developmentalDisorderDiagnosis": "NOT_EVALUATED",
+  "hasEarlyIntervention": false,
+  "earlyInterventionDetails": null,
+  "primaryLanguage": "Tiếng Việt",
+  "familyDevelopmentalIssues": "Không có ai trong gia đình có vấn đề phát triển",
+  "height": 95.5,
+  "weight": 14.2,
+  "bloodType": "A+",
+  "allergies": "Không có dị ứng",
+  "medicalHistory": "Tiêm chủng đầy đủ theo lịch, không có bệnh lý đặc biệt",
+  "status": "ACTIVE"
+}

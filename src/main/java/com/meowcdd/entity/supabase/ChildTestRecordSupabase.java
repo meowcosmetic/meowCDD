@@ -23,9 +23,6 @@ public class ChildTestRecordSupabase extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "external_id", unique = true, nullable = false)
-    private String externalId; // ID từ service khác
-    
     @Column(name = "child_id", nullable = false)
     private Long childId; // ID của trẻ thực hiện bài test
     

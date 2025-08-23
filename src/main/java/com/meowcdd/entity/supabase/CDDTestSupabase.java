@@ -25,14 +25,20 @@ public class CDDTestSupabase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String code;
+    @Column(name = "assessment_code", unique = true, nullable = false)
+    private String assessmentCode;
 
-    @Column(nullable = false)
-    private String name;
-
+    // Names as JSON string (multilingual support)
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String namesJson;
+
+    // Descriptions as JSON string (multilingual support)
+    @Column(columnDefinition = "TEXT")
+    private String descriptionsJson;
+
+    // Instructions as JSON string (multilingual support)
+    @Column(columnDefinition = "TEXT")
+    private String instructionsJson;
 
     @Column(nullable = false)
     private String category;
@@ -47,20 +53,27 @@ public class CDDTestSupabase {
     @Column(nullable = false)
     private Status status;
 
-    @Column(name = "total_questions")
-    private Integer totalQuestions;
+    @Column(nullable = false)
+    private String version;
 
-    @Column(name = "passing_score")
-    private Integer passingScore;
+    @Column(name = "estimated_duration")
+    private Integer estimatedDuration;
 
-    @Column(name = "max_score")
-    private Integer maxScore;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "administration_type")
+    private AdministrationType administrationType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "required_qualifications")
+    private RequiredQualifications requiredQualifications;
+
+    // Required materials as JSON array string
     @Column(columnDefinition = "TEXT")
-    private String instructions;
+    private String requiredMaterialsJson;
 
+    // Notes as JSON string (multilingual support)
     @Column(columnDefinition = "TEXT")
-    private String notes;
+    private String notesJson;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -87,6 +100,23 @@ public class CDDTestSupabase {
         private final String displayName;
 
         Status(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
+
+    public enum AdministrationType {
+        PARENT_REPORT("Báo cáo phụ huynh"),
+        PROFESSIONAL_OBSERVATION("Quan sát chuyên môn"),
+        DIRECT_ASSESSMENT("Đánh giá trực tiếp"),
+        SELF_REPORT("Tự báo cáo");
+
+        private final String displayName;
+
+        AdministrationType(String displayName) {
             this.displayName = displayName;
         }
 

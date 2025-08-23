@@ -19,18 +19,17 @@ public class CDDTestDto {
     private Map<String, String> descriptions;
     private Map<String, String> instructions;
     private String category;
-    private String targetAgeGroup;
     private Integer minAgeMonths;
     private Integer maxAgeMonths;
     private String status;
     private String version;
     private Integer estimatedDuration;
-    private List<YesNoQuestionDto> questions;
-    private ScoringCriteriaDto scoringCriteria;
     private String administrationType;
     private String requiredQualifications;
     private List<String> requiredMaterials;
     private Map<String, String> notes;
+    private List<YesNoQuestionDto> questions;
+    private ScoringCriteriaDto scoringCriteria;
 
     @Data
     @NoArgsConstructor

@@ -37,7 +37,7 @@ public class ChildSupabaseService {
                 .orElseThrow(() -> new IllegalArgumentException("Child not found with id: " + id));
 
         // Cập nhật các trường
-        existingChild.setExternalId(childDetails.getExternalId());
+        existingChild.setParentId(childDetails.getParentId());
         existingChild.setFullName(childDetails.getFullName());
         existingChild.setGender(childDetails.getGender());
         existingChild.setDateOfBirth(childDetails.getDateOfBirth());
@@ -68,13 +68,7 @@ public class ChildSupabaseService {
         return childRepository.findById(id);
     }
 
-    /**
-     * Lấy trẻ theo external ID
-     */
-    @Transactional(readOnly = true)
-    public Optional<ChildSupabase> getChildByExternalId(String externalId) {
-        return childRepository.findByExternalId(externalId);
-    }
+
 
     /**
      * Lấy tất cả trẻ
@@ -82,6 +76,14 @@ public class ChildSupabaseService {
     @Transactional(readOnly = true)
     public List<ChildSupabase> getAllChildren() {
         return childRepository.findAll();
+    }
+
+    /**
+     * Lấy trẻ theo parent ID
+     */
+    @Transactional(readOnly = true)
+    public List<ChildSupabase> getChildrenByParentId(String parentId) {
+        return childRepository.findByParentId(parentId);
     }
 
     /**

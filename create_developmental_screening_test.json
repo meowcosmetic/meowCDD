@@ -13,14 +13,13 @@
     "en": "Please answer the following questions based on your observation and knowledge of the child. Select 'Yes' if the child shows the described sign, 'No' if the child does not show that sign."
   },
   "category": "DEVELOPMENTAL_SCREENING",
-  "targetAgeGroup": "0-6_MONTHS",
   "minAgeMonths": 0,
   "maxAgeMonths": 6,
   "status": "ACTIVE",
   "version": "1.0",
   "estimatedDuration": 15,
   "administrationType": "PARENT_REPORT",
-  "requiredQualifications": "Không yêu cầu trình độ chuyên môn",
+  "requiredQualifications": "NO_QUALIFICATION_REQUIRED",
   "requiredMaterials": ["Bảng câu hỏi", "Bút"],
   "notes": {
     "vi": "Bảng câu hỏi này được thiết kế để sàng lọc sớm các dấu hiệu bất thường trong phát triển của trẻ sơ sinh và trẻ nhỏ",

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -16,9 +15,6 @@ import java.time.LocalDateTime;
 public class ChildTestRecordSupabaseDto {
     
     private Long id;
-    
-    @NotBlank(message = "External ID is required")
-    private String externalId;
     
     @NotNull(message = "Child ID is required")
     private Long childId;

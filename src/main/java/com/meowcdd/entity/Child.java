@@ -161,7 +161,8 @@ public class Child extends BaseEntity {
     public enum DevelopmentalDisorderStatus {
         YES("Có"),
         NO("Không"),
-        NOT_EVALUATED("Chưa đánh giá");
+        NOT_EVALUATED("Chưa đánh giá"),
+        UNDER_INVESTIGATION("Đang điều tra");
         
         private final String displayName;
         

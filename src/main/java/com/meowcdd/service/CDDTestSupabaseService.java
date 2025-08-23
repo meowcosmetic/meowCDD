@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meowcdd.dto.CDDTestDto;
 import com.meowcdd.entity.supabase.CDDTestSupabase;
+import com.meowcdd.entity.supabase.RequiredQualifications;
 import com.meowcdd.repository.supabase.CDDTestSupabaseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.meowcdd.dto.PageResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class CDDTestSupabaseService {
     private final ObjectMapper objectMapper;
 
     public CDDTestDto createTest(CDDTestDto dto) {
-        if (repository.existsByCode(dto.getAssessmentCode())) {
+        if (repository.existsByAssessmentCode(dto.getAssessmentCode())) {
             throw new IllegalArgumentException("Test code already exists: " + dto.getAssessmentCode());
         }
 
@@ -40,21 +42,23 @@ public class CDDTestSupabaseService {
                 .orElseThrow(() -> new IllegalArgumentException("Test not found with id: " + id));
 
         // Update fields
-        existing.setCode(dto.getAssessmentCode());
-        existing.setName(dto.getNames() != null ? dto.getNames().get("vi") : "Test");
-        existing.setDescription(dto.getDescriptions() != null ? dto.getDescriptions().get("vi") : "");
+        existing.setAssessmentCode(dto.getAssessmentCode());
         existing.setCategory(dto.getCategory());
         existing.setMinAgeMonths(dto.getMinAgeMonths());
         existing.setMaxAgeMonths(dto.getMaxAgeMonths());
         existing.setStatus(CDDTestSupabase.Status.valueOf(dto.getStatus()));
-        existing.setTotalQuestions(dto.getScoringCriteria() != null ? dto.getScoringCriteria().getTotalQuestions() : 0);
-        existing.setPassingScore(0); // Default value
-        existing.setMaxScore(dto.getScoringCriteria() != null ? dto.getScoringCriteria().getTotalQuestions() : 0);
-        existing.setInstructions(dto.getInstructions() != null ? dto.getInstructions().get("vi") : "");
-        existing.setNotes(dto.getNotes() != null ? dto.getNotes().get("vi") : "");
+        existing.setVersion(dto.getVersion());
+        existing.setEstimatedDuration(dto.getEstimatedDuration());
+        existing.setAdministrationType(CDDTestSupabase.AdministrationType.valueOf(dto.getAdministrationType()));
+        existing.setRequiredQualifications(RequiredQualifications.valueOf(dto.getRequiredQualifications()));
 
         // Convert complex objects to JSON
         try {
+            existing.setNamesJson(objectMapper.writeValueAsString(dto.getNames()));
+            existing.setDescriptionsJson(objectMapper.writeValueAsString(dto.getDescriptions()));
+            existing.setInstructionsJson(objectMapper.writeValueAsString(dto.getInstructions()));
+            existing.setRequiredMaterialsJson(objectMapper.writeValueAsString(dto.getRequiredMaterials()));
+            existing.setNotesJson(objectMapper.writeValueAsString(dto.getNotes()));
             existing.setQuestionsJson(objectMapper.writeValueAsString(dto.getQuestions()));
             existing.setScoringCriteriaJson(objectMapper.writeValueAsString(dto.getScoringCriteria()));
         } catch (JsonProcessingException e) {
@@ -71,7 +75,7 @@ public class CDDTestSupabaseService {
     }
 
     public Optional<CDDTestDto> getTestByCode(String code) {
-        return repository.findByCode(code).map(this::convertToDto);
+        return repository.findByAssessmentCode(code).map(this::convertToDto);
     }
 
     public List<CDDTestDto> getAllTests() {
@@ -98,6 +102,62 @@ public class CDDTestSupabaseService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+    
+    public List<CDDTestDto> getTestsByAgeMonthsAndStatus(Integer ageMonths, String status) {
+        CDDTestSupabase.Status enumStatus = CDDTestSupabase.Status.valueOf(status.toUpperCase());
+        return repository.findByAgeMonthsAndStatus(ageMonths, enumStatus).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+    
+    public List<CDDTestDto> getTestsByAgeMonthsAndCategory(Integer ageMonths, String category) {
+        return repository.findByAgeMonthsAndCategory(ageMonths, category).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+    
+    public List<CDDTestDto> getTestsByAgeMonthsAndStatusAndCategory(Integer ageMonths, String status, String category) {
+        CDDTestSupabase.Status enumStatus = CDDTestSupabase.Status.valueOf(status.toUpperCase());
+        return repository.findByAgeMonthsAndStatusAndCategory(ageMonths, enumStatus, category).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+    
+    public PageResponseDto<CDDTestDto> getTestsByAgeMonthsWithPagination(Integer ageMonths, int page, int size) {
+        List<CDDTestDto> allTests = getTestsByAgeMonths(ageMonths);
+        return paginateResults(allTests, page, size);
+    }
+    
+    public PageResponseDto<CDDTestDto> getTestsByAgeMonthsAndStatusWithPagination(Integer ageMonths, String status, int page, int size) {
+        List<CDDTestDto> allTests = getTestsByAgeMonthsAndStatus(ageMonths, status);
+        return paginateResults(allTests, page, size);
+    }
+    
+    public PageResponseDto<CDDTestDto> getTestsByAgeMonthsAndCategoryWithPagination(Integer ageMonths, String category, int page, int size) {
+        List<CDDTestDto> allTests = getTestsByAgeMonthsAndCategory(ageMonths, category);
+        return paginateResults(allTests, page, size);
+    }
+    
+    public PageResponseDto<CDDTestDto> getTestsByAgeMonthsAndStatusAndCategoryWithPagination(Integer ageMonths, String status, String category, int page, int size) {
+        List<CDDTestDto> allTests = getTestsByAgeMonthsAndStatusAndCategory(ageMonths, status, category);
+        return paginateResults(allTests, page, size);
+    }
+    
+    private PageResponseDto<CDDTestDto> paginateResults(List<CDDTestDto> allTests, int page, int size) {
+        int totalElements = allTests.size();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+        
+        // Validate page number
+        if (page < 0) page = 0;
+        if (page >= totalPages && totalPages > 0) page = totalPages - 1;
+        
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, totalElements);
+        
+        List<CDDTestDto> pageContent = allTests.subList(startIndex, endIndex);
+        
+        return PageResponseDto.of(pageContent, page, size, totalElements);
+    }
 
     public void deleteTest(Long id) {
         if (!repository.existsById(id)) {
@@ -108,21 +168,23 @@ public class CDDTestSupabaseService {
 
     private CDDTestSupabase convertToEntity(CDDTestDto dto) {
         CDDTestSupabase entity = CDDTestSupabase.builder()
-                .code(dto.getAssessmentCode())
-                .name(dto.getNames() != null ? dto.getNames().get("vi") : "Test")
-                .description(dto.getDescriptions() != null ? dto.getDescriptions().get("vi") : "")
+                .assessmentCode(dto.getAssessmentCode())
                 .category(dto.getCategory())
                 .minAgeMonths(dto.getMinAgeMonths())
                 .maxAgeMonths(dto.getMaxAgeMonths())
                 .status(CDDTestSupabase.Status.valueOf(dto.getStatus()))
-                .totalQuestions(dto.getScoringCriteria() != null ? dto.getScoringCriteria().getTotalQuestions() : 0)
-                .passingScore(0) // Default value
-                .maxScore(dto.getScoringCriteria() != null ? dto.getScoringCriteria().getTotalQuestions() : 0)
-                .instructions(dto.getInstructions() != null ? dto.getInstructions().get("vi") : "")
-                .notes(dto.getNotes() != null ? dto.getNotes().get("vi") : "")
+                .version(dto.getVersion())
+                .estimatedDuration(dto.getEstimatedDuration())
+                .administrationType(CDDTestSupabase.AdministrationType.valueOf(dto.getAdministrationType()))
+                .requiredQualifications(RequiredQualifications.valueOf(dto.getRequiredQualifications()))
                 .build();
 
         try {
+            entity.setNamesJson(objectMapper.writeValueAsString(dto.getNames()));
+            entity.setDescriptionsJson(objectMapper.writeValueAsString(dto.getDescriptions()));
+            entity.setInstructionsJson(objectMapper.writeValueAsString(dto.getInstructions()));
+            entity.setRequiredMaterialsJson(objectMapper.writeValueAsString(dto.getRequiredMaterials()));
+            entity.setNotesJson(objectMapper.writeValueAsString(dto.getNotes()));
             entity.setQuestionsJson(objectMapper.writeValueAsString(dto.getQuestions()));
             entity.setScoringCriteriaJson(objectMapper.writeValueAsString(dto.getScoringCriteria()));
         } catch (JsonProcessingException e) {
@@ -136,18 +198,38 @@ public class CDDTestSupabaseService {
     private CDDTestDto convertToDto(CDDTestSupabase entity) {
         CDDTestDto dto = CDDTestDto.builder()
                 .id(entity.getId().toString())
-                .assessmentCode(entity.getCode())
-                .names(Map.of("vi", entity.getName()))
-                .descriptions(Map.of("vi", entity.getDescription()))
+                .assessmentCode(entity.getAssessmentCode())
                 .category(entity.getCategory())
                 .minAgeMonths(entity.getMinAgeMonths())
                 .maxAgeMonths(entity.getMaxAgeMonths())
                 .status(entity.getStatus().name())
-                .instructions(Map.of("vi", entity.getInstructions()))
-                .notes(Map.of("vi", entity.getNotes()))
+                .version(entity.getVersion())
+                .estimatedDuration(entity.getEstimatedDuration())
+                .administrationType(entity.getAdministrationType().name())
+                .requiredQualifications(entity.getRequiredQualifications().name())
                 .build();
 
         try {
+            if (entity.getNamesJson() != null) {
+                dto.setNames(objectMapper.readValue(entity.getNamesJson(), 
+                    new TypeReference<Map<String, String>>() {}));
+            }
+            if (entity.getDescriptionsJson() != null) {
+                dto.setDescriptions(objectMapper.readValue(entity.getDescriptionsJson(), 
+                    new TypeReference<Map<String, String>>() {}));
+            }
+            if (entity.getInstructionsJson() != null) {
+                dto.setInstructions(objectMapper.readValue(entity.getInstructionsJson(), 
+                    new TypeReference<Map<String, String>>() {}));
+            }
+            if (entity.getRequiredMaterialsJson() != null) {
+                dto.setRequiredMaterials(objectMapper.readValue(entity.getRequiredMaterialsJson(), 
+                    new TypeReference<List<String>>() {}));
+            }
+            if (entity.getNotesJson() != null) {
+                dto.setNotes(objectMapper.readValue(entity.getNotesJson(), 
+                    new TypeReference<Map<String, String>>() {}));
+            }
             if (entity.getQuestionsJson() != null) {
                 dto.setQuestions(objectMapper.readValue(entity.getQuestionsJson(), 
                     new TypeReference<List<CDDTestDto.YesNoQuestionDto>>() {}));

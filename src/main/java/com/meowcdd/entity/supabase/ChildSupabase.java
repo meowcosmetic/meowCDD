@@ -25,8 +25,8 @@ public class ChildSupabase extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "external_id", unique = true, nullable = false)
-    private String externalId; // ID từ service khác
+    @Column(name = "parent_id", nullable = false)
+    private String parentId; // ID của phụ huynh (String format)
     
     @Column(name = "full_name", nullable = false)
     private String fullName; // Họ và tên trẻ
@@ -66,9 +66,8 @@ public class ChildSupabase extends BaseEntity {
     @Column(name = "primary_language")
     private String primaryLanguage; // Ngôn ngữ chủ yếu sử dụng trong gia đình
     
-    @Column(name = "family_developmental_issues")
-    @Enumerated(EnumType.STRING)
-    private FamilyDevelopmentalIssues familyDevelopmentalIssues; // Có ai khác trong gia đình từng có vấn đề phát triển/ngôn ngữ
+    @Column(name = "family_developmental_issues", columnDefinition = "TEXT")
+    private String familyDevelopmentalIssues; // Có ai khác trong gia đình từng có vấn đề phát triển/ngôn ngữ
     
     // Các trường thông tin cơ bản khác
     @Column(name = "height")
@@ -158,7 +157,8 @@ public class ChildSupabase extends BaseEntity {
     public enum DevelopmentalDisorderStatus {
         YES("Có"),
         NO("Không"),
-        NOT_EVALUATED("Chưa đánh giá");
+        NOT_EVALUATED("Chưa đánh giá"),
+        UNDER_INVESTIGATION("Đang điều tra");
         
         private final String displayName;
         
@@ -171,19 +171,5 @@ public class ChildSupabase extends BaseEntity {
         }
     }
     
-    public enum FamilyDevelopmentalIssues {
-        YES("Có"),
-        NO("Không"),
-        UNKNOWN("Không rõ");
-        
-        private final String displayName;
-        
-        FamilyDevelopmentalIssues(String displayName) {
-            this.displayName = displayName;
-        }
-        
-        public String getDisplayName() {
-            return displayName;
-        }
-    }
+
 }

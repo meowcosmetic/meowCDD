@@ -292,7 +292,7 @@ curl -X POST http://localhost:8101/api/v1/children \
 - All dates should be in ISO format (YYYY-MM-DD)
 - Gender values: MALE, FEMALE, OTHER
 - Status values: ACTIVE, INACTIVE, SUSPENDED
-- DevelopmentalDisorderStatus values: YES, NO, NOT_EVALUATED
+- DevelopmentalDisorderStatus values: YES, NO, NOT_EVALUATED, UNDER_INVESTIGATION
 - FamilyDevelopmentalIssues values: YES, NO, UNKNOWN
 - The application no longer requires parent information
 - All parent-related endpoints have been removed

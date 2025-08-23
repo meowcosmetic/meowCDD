@@ -8,14 +8,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.bind.annotation.RequestBody;
+
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import com.meowcdd.dto.PageResponseDto;
 
 @RestController
 @RequestMapping("/supabase/cdd-tests")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*")
 public class CDDTestSupabaseController {
 
     private final CDDTestSupabaseService cddTestSupabaseService;
@@ -28,6 +33,108 @@ public class CDDTestSupabaseController {
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTest);
         } catch (IllegalArgumentException e) {
             log.error("Error creating CDD test: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // Paginated endpoints - phải đặt trước /{id} để tránh conflict
+    @GetMapping("/paginated")
+    public ResponseEntity<PageResponseDto<CDDTestDto>> getAllTestsWithPagination(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("Getting all CDD tests with pagination (page: {}, size: {})", page, size);
+        List<CDDTestDto> allTests = cddTestSupabaseService.getAllTests();
+        PageResponseDto<CDDTestDto> tests = paginateResults(allTests, page, size);
+        return ResponseEntity.ok(tests);
+    }
+    
+    @GetMapping("/age/{ageMonths}/paginated")
+    public ResponseEntity<PageResponseDto<CDDTestDto>> getTestsByAgeMonthsWithPagination(
+            @PathVariable Integer ageMonths,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("Getting CDD tests by age months: {} with pagination (page: {}, size: {})", ageMonths, page, size);
+        PageResponseDto<CDDTestDto> tests = cddTestSupabaseService.getTestsByAgeMonthsWithPagination(ageMonths, page, size);
+        return ResponseEntity.ok(tests);
+    }
+    
+    @GetMapping("/age/{ageMonths}/status/{status}/paginated")
+    public ResponseEntity<PageResponseDto<CDDTestDto>> getTestsByAgeMonthsAndStatusWithPagination(
+            @PathVariable Integer ageMonths,
+            @PathVariable String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("Getting CDD tests by age months: {}, status: {} with pagination (page: {}, size: {})", ageMonths, status, page, size);
+        try {
+            PageResponseDto<CDDTestDto> tests = cddTestSupabaseService.getTestsByAgeMonthsAndStatusWithPagination(ageMonths, status, page, size);
+            return ResponseEntity.ok(tests);
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid status: {}", status);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @GetMapping("/age/{ageMonths}/category/{category}/paginated")
+    public ResponseEntity<PageResponseDto<CDDTestDto>> getTestsByAgeMonthsAndCategoryWithPagination(
+            @PathVariable Integer ageMonths,
+            @PathVariable String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("Getting CDD tests by age months: {}, category: {} with pagination (page: {}, size: {})", ageMonths, category, page, size);
+        PageResponseDto<CDDTestDto> tests = cddTestSupabaseService.getTestsByAgeMonthsAndCategoryWithPagination(ageMonths, category, page, size);
+        return ResponseEntity.ok(tests);
+    }
+    
+    @GetMapping("/age/{ageMonths}/category/{category}/status/{status}/paginated")
+    public ResponseEntity<PageResponseDto<CDDTestDto>> getTestsByAgeMonthsAndCategoryAndStatusWithPagination(
+            @PathVariable Integer ageMonths,
+            @PathVariable String category,
+            @PathVariable String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("Getting CDD tests by age months: {}, category: {}, status: {} with pagination (page: {}, size: {})", ageMonths, category, status, page, size);
+        try {
+            PageResponseDto<CDDTestDto> tests = cddTestSupabaseService.getTestsByAgeMonthsAndStatusAndCategoryWithPagination(ageMonths, status, category, page, size);
+            return ResponseEntity.ok(tests);
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid status: {}", status);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @GetMapping("/age/{ageMonths}/filter/paginated")
+    public ResponseEntity<PageResponseDto<CDDTestDto>> getTestsByAgeMonthsAndStatusAndCategoryWithPagination(
+            @RequestParam Integer ageMonths,
+            @RequestParam String status,
+            @RequestParam String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("Getting CDD tests by age months: {}, status: {}, category: {} with pagination (page: {}, size: {})", ageMonths, status, category, page, size);
+        try {
+            PageResponseDto<CDDTestDto> tests = cddTestSupabaseService.getTestsByAgeMonthsAndStatusAndCategoryWithPagination(ageMonths, status, category, page, size);
+            return ResponseEntity.ok(tests);
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid status: {}", status);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @GetMapping("/category/{category}/status/{status}/paginated")
+    public ResponseEntity<PageResponseDto<CDDTestDto>> getTestsByCategoryAndStatusWithPagination(
+            @PathVariable String category,
+            @PathVariable String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("Getting CDD tests by category: {}, status: {} with pagination (page: {}, size: {})", category, status, page, size);
+        try {
+            List<CDDTestDto> allTests = cddTestSupabaseService.getTestsByCategory(category);
+            List<CDDTestDto> filteredTests = allTests.stream()
+                    .filter(test -> test.getStatus().equalsIgnoreCase(status))
+                    .collect(Collectors.toList());
+            PageResponseDto<CDDTestDto> tests = paginateResults(filteredTests, page, size);
+            return ResponseEntity.ok(tests);
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid status: {}", status);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -80,6 +187,10 @@ public class CDDTestSupabaseController {
         List<CDDTestDto> tests = cddTestSupabaseService.getTestsByAgeMonths(ageMonths);
         return ResponseEntity.ok(tests);
     }
+    
+
+    
+
 
     @PutMapping("/{id}")
     public ResponseEntity<CDDTestDto> updateTest(@PathVariable Long id, @Valid @RequestBody CDDTestDto cddTestDto) {
@@ -131,5 +242,22 @@ public class CDDTestSupabaseController {
         log.info("Getting all inactive CDD tests");
         List<CDDTestDto> tests = cddTestSupabaseService.getTestsByStatus("INACTIVE");
         return ResponseEntity.ok(tests);
+    }
+    
+    // Helper method for pagination
+    private PageResponseDto<CDDTestDto> paginateResults(List<CDDTestDto> allTests, int page, int size) {
+        int totalElements = allTests.size();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+        
+        // Validate page number
+        if (page < 0) page = 0;
+        if (page >= totalPages && totalPages > 0) page = totalPages - 1;
+        
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, totalElements);
+        
+        List<CDDTestDto> pageContent = allTests.subList(startIndex, endIndex);
+        
+        return PageResponseDto.of(pageContent, page, size, totalElements);
     }
 }

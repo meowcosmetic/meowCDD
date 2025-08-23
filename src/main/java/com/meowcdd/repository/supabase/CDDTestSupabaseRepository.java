@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface CDDTestSupabaseRepository extends JpaRepository<CDDTestSupabase, Long> {
 
-    Optional<CDDTestSupabase> findByCode(String code);
+    Optional<CDDTestSupabase> findByAssessmentCode(String assessmentCode);
 
     List<CDDTestSupabase> findByStatus(CDDTestSupabase.Status status);
 
@@ -20,10 +20,19 @@ public interface CDDTestSupabaseRepository extends JpaRepository<CDDTestSupabase
 
     @Query("SELECT c FROM CDDTestSupabase c WHERE c.minAgeMonths <= :ageMonths AND c.maxAgeMonths >= :ageMonths")
     List<CDDTestSupabase> findByAgeMonths(@Param("ageMonths") Integer ageMonths);
+    
+    @Query("SELECT c FROM CDDTestSupabase c WHERE c.minAgeMonths <= :ageMonths AND c.maxAgeMonths >= :ageMonths AND c.status = :status")
+    List<CDDTestSupabase> findByAgeMonthsAndStatus(@Param("ageMonths") Integer ageMonths, @Param("status") CDDTestSupabase.Status status);
+    
+    @Query("SELECT c FROM CDDTestSupabase c WHERE c.minAgeMonths <= :ageMonths AND c.maxAgeMonths >= :ageMonths AND c.category = :category")
+    List<CDDTestSupabase> findByAgeMonthsAndCategory(@Param("ageMonths") Integer ageMonths, @Param("category") String category);
+    
+    @Query("SELECT c FROM CDDTestSupabase c WHERE c.minAgeMonths <= :ageMonths AND c.maxAgeMonths >= :ageMonths AND c.status = :status AND c.category = :category")
+    List<CDDTestSupabase> findByAgeMonthsAndStatusAndCategory(@Param("ageMonths") Integer ageMonths, @Param("status") CDDTestSupabase.Status status, @Param("category") String category);
 
     @Query("SELECT c FROM CDDTestSupabase c WHERE c.status = 'ACTIVE'")
     List<CDDTestSupabase> findActiveTests();
 
-    boolean existsByCode(String code);
+    boolean existsByAssessmentCode(String assessmentCode);
 }
 

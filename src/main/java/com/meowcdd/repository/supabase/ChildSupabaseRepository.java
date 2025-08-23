@@ -14,9 +14,9 @@ import java.util.Optional;
 public interface ChildSupabaseRepository extends JpaRepository<ChildSupabase, Long> {
     
     /**
-     * Tìm trẻ theo external ID
+     * Tìm trẻ theo parent ID
      */
-    Optional<ChildSupabase> findByExternalId(String externalId);
+    List<ChildSupabase> findByParentId(String parentId);
     
     /**
      * Tìm trẻ theo tên (tìm kiếm mờ)

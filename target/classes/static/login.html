@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeowCDD - Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 MeowCDD Authentication</h1>
+        
+        <!-- Login Form -->
+        <div id="loginForm">
+            <h2>Login</h2>
+            <form id="loginFormElement">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            
+            <div style="margin-top: 20px;">
+                <h3>Test Accounts:</h3>
+                <p><strong>Admin:</strong> username: <code>admin</code>, password: <code>admin123</code></p>
+                <p><strong>User:</strong> username: <code>user</code>, password: <code>user123</code></p>
+            </div>
+        </div>
+
+        <!-- Logged In Section -->
+        <div id="loggedInSection" class="hidden">
+            <h2>Welcome, <span id="userDisplay"></span>!</h2>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <button onclick="checkStatus()">Check Status</button>
+            <button onclick="getUserInfo()">Get User Info</button>
+        </div>
+
+        <!-- Status Display -->
+        <div id="statusDisplay"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8101/api/v1';
+        
+        // Check authentication status on page load
+        window.onload = function() {
+            checkStatus();
+        };
+
+        // Login form submission
+        document.getElementById('loginFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            login();
+        });
+
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus('Login successful!', 'success');
+                    checkStatus();
+                } else {
+                    showStatus('Login failed: ' + data.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Login error: ' + error.message, 'error');
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus('Logout successful!', 'success');
+                    updateUI(false);
+                } else {
+                    showStatus('Logout failed: ' + data.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Logout error: ' + error.message, 'error');
+            }
+        }
+
+        async function checkStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/status`, {
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                updateUI(data.authenticated, data.username);
+                
+                if (data.authenticated) {
+                    showStatus('User is authenticated', 'info');
+                } else {
+                    showStatus('User is not authenticated', 'info');
+                }
+            } catch (error) {
+                showStatus('Status check error: ' + error.message, 'error');
+            }
+        }
+
+        async function getUserInfo() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/user`, {
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    showStatus(`User: ${data.username}, Authorities: ${JSON.stringify(data.authorities)}`, 'info');
+                } else {
+                    showStatus('No authenticated user found', 'error');
+                }
+            } catch (error) {
+                showStatus('Get user info error: ' + error.message, 'error');
+            }
+        }
+
+        function updateUI(isAuthenticated, username = '') {
+            const loginForm = document.getElementById('loginForm');
+            const loggedInSection = document.getElementById('loggedInSection');
+            const userDisplay = document.getElementById('userDisplay');
+
+            if (isAuthenticated) {
+                loginForm.classList.add('hidden');
+                loggedInSection.classList.remove('hidden');
+                userDisplay.textContent = username;
+            } else {
+                loginForm.classList.remove('hidden');
+                loggedInSection.classList.add('hidden');
+                userDisplay.textContent = '';
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDisplay = document.getElementById('statusDisplay');
+            statusDisplay.innerHTML = `<div class="status ${type}">${message}</div>`;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                statusDisplay.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
