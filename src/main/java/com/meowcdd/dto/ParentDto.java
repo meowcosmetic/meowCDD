@@ -19,9 +19,6 @@ public class ParentDto {
     
     private Long id;
     
-    @NotBlank(message = "External ID is required")
-    private String externalId;
-    
     @NotBlank(message = "Full name is required")
     private String fullName;
     

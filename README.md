@@ -1,21 +1,21 @@
 # Child Development Service
 
-Service quản lý thông tin trẻ em có rối loạn phát triển, sử dụng Spring Boot với MongoDB và MySQL.
+Service quản lý thông tin trẻ em có rối loạn phát triển, sử dụng Spring Boot với MongoDB và Neon PostgreSQL.
 
 ## Công nghệ sử dụng
 
 - **Spring Boot 3.2.0**
 - **Java 17**
 - **MongoDB** - Lưu trữ thông tin chi tiết về rối loạn phát triển
-- **MySQL** - Lưu trữ thông tin cơ bản về phụ huynh và trẻ em
-- **Spring Data JPA** - ORM cho MySQL
+- **Neon PostgreSQL** - Lưu trữ thông tin cơ bản về phụ huynh và trẻ em
+- **Spring Data JPA** - ORM cho Neon PostgreSQL
 - **Spring Data MongoDB** - ODM cho MongoDB
 - **Lombok** - Giảm boilerplate code
 - **Validation** - Kiểm tra dữ liệu đầu vào
 
 ## Cấu trúc Database
 
-### MySQL (JPA)
+### Neon PostgreSQL (JPA)
 - **Parent** - Thông tin phụ huynh
 - **Child** - Thông tin cơ bản của trẻ em
 
@@ -30,15 +30,14 @@ Service quản lý thông tin trẻ em có rối loạn phát triển, sử dụ
 ### Yêu cầu hệ thống
 - Java 17+
 - Maven 3.6+
-- MySQL 8.0+
+- Neon PostgreSQL (cloud database)
 - MongoDB 4.4+
 
 ### Cấu hình Database
 
-1. **MySQL**
-```sql
-CREATE DATABASE child_development_sql;
-```
+1. **Neon PostgreSQL**
+   - Tạo database trên Neon.tech
+   - Cập nhật thông tin kết nối trong `application.properties`
 
 2. **MongoDB**
 ```bash
@@ -51,8 +50,8 @@ mongod
 Chỉnh sửa file `src/main/resources/application.properties`:
 
 ```properties
-# MySQL Configuration
-spring.datasource.url=jdbc:mysql://localhost:3306/child_development_sql?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+# Neon PostgreSQL Configuration
+spring.datasource.url=jdbc:postgresql://your-neon-host/your-database?sslmode=require
 spring.datasource.username=your_username
 spring.datasource.password=your_password
 
@@ -72,7 +71,24 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-Ứng dụng sẽ chạy tại: `http://localhost:8080/api/v1`
+Ứng dụng sẽ chạy tại: `http://localhost:8101/api/v1`
+
+## Docker Deployment
+
+### Build Docker Image
+```bash
+docker build -t child-development-service:latest .
+```
+
+### Run Docker Container
+```bash
+docker run -p 8101:8101 --name child-dev-service child-development-service:latest
+```
+
+### Test API
+```bash
+curl http://localhost:8101/api/v1/health
+```
 
 ## API Endpoints
 
@@ -84,7 +100,6 @@ POST /api/v1/parents
 Content-Type: application/json
 
 {
-  "externalId": "PARENT_001",
   "fullName": "Nguyễn Văn A",
   "phoneNumber": "0123456789",
   "email": "nguyenvana@email.com",
@@ -97,7 +112,6 @@ Content-Type: application/json
 #### Lấy thông tin phụ huynh
 ```http
 GET /api/v1/parents/{id}
-GET /api/v1/parents/external/{externalId}
 ```
 
 #### Lấy danh sách phụ huynh
@@ -131,7 +145,6 @@ POST /api/v1/children
 Content-Type: application/json
 
 {
-  "externalId": "CHILD_001",
   "fullName": "Nguyễn Thị B",
   "dateOfBirth": "2020-03-10T00:00:00",
   "gender": "FEMALE",
@@ -140,7 +153,6 @@ Content-Type: application/json
   "bloodType": "A+",
   "allergies": "Không có",
   "medicalHistory": "Không có tiền sử bệnh",
-  "parentExternalId": "PARENT_001"
 }
 ```
 
@@ -184,47 +196,11 @@ POST /api/v1/development-disorders
 Content-Type: application/json
 
 {
-  "childExternalId": "CHILD_001",
   "disorderType": "AUTISM",
   "severity": "MILD",
   "diagnosisDate": "2023-01-15T00:00:00",
-  "diagnosedBy": "Dr. Trần Văn C",
-  "diagnosisNotes": "Chẩn đoán ban đầu",
-  "symptoms": [
-    {
-      "name": "Khó khăn giao tiếp",
-      "description": "Trẻ gặp khó khăn trong việc giao tiếp bằng lời nói",
-      "severity": "MILD",
-      "firstObserved": "2022-12-01T00:00:00",
-      "notes": "Cần theo dõi thêm"
-    }
-  ],
-  "assessments": [
-    {
-      "type": "ADOS-2",
-      "assessmentDate": "2023-01-15T00:00:00",
-      "assessor": "Dr. Trần Văn C",
-      "score": 7.5,
-      "result": "MILD_AUTISM",
-      "notes": "Đánh giá ban đầu",
-      "recommendations": [
-        "Can thiệp sớm",
-        "Therapy ngôn ngữ",
-        "Therapy hành vi"
-      ]
-    }
-  ],
-  "treatments": [
-    {
-      "type": "SPEECH_THERAPY",
-      "description": "Trị liệu ngôn ngữ",
-      "startDate": "2023-02-01T00:00:00",
-      "provider": "Trung tâm ABC",
-      "status": "ONGOING",
-      "effectiveness": "PARTIALLY_EFFECTIVE",
-      "notes": "Trẻ có tiến bộ chậm"
-    }
-  ],
+  "diagnosedBy": "Dr. Nguyễn Văn B",
+  "diagnosisNotes": "Chẩn đoán sơ bộ",
   "currentStatus": "UNDER_TREATMENT"
 }
 ```
@@ -233,13 +209,6 @@ Content-Type: application/json
 ```http
 GET /api/v1/development-disorders/{id}
 GET /api/v1/development-disorders/child/{childExternalId}
-```
-
-#### Lấy danh sách rối loạn phát triển
-```http
-GET /api/v1/development-disorders
-GET /api/v1/development-disorders/type/AUTISM
-GET /api/v1/development-disorders/severity/MILD
 ```
 
 #### Cập nhật rối loạn phát triển
@@ -253,11 +222,6 @@ Content-Type: application/json
 }
 ```
 
-#### Xóa rối loạn phát triển
-```http
-DELETE /api/v1/development-disorders/{id}
-```
-
 ### Progress Report Management
 
 #### Tạo báo cáo tiến độ
@@ -266,569 +230,245 @@ POST /api/v1/progress-reports
 Content-Type: application/json
 
 {
-  "childExternalId": "CHILD_001",
-  "reportDate": "2023-03-15T00:00:00",
-  "reporter": "Dr. Nguyễn Thị D",
+  "reportDate": "2023-02-01T00:00:00",
+  "reporter": "Dr. Nguyễn Văn C",
   "reportType": "MONTHLY",
-  "physicalDevelopment": {
-    "height": 120.5,
-    "weight": 25.2,
-    "motorSkills": "IMPROVING"
-  },
-  "cognitiveDevelopment": {
-    "attention": "GOOD",
-    "memory": "FAIR",
-    "problemSolving": "IMPROVING"
-  },
-  "socialDevelopment": {
-    "interaction": "IMPROVING",
-    "communication": "NEEDS_SUPPORT"
-  },
-  "emotionalDevelopment": {
-    "selfRegulation": "FAIR",
-    "empathy": "GOOD"
-  },
-  "languageDevelopment": {
-    "vocabulary": "EXPANDING",
-    "grammar": "IMPROVING"
-  },
-  "milestones": [
-    {
-      "category": "LANGUAGE",
-      "description": "Có thể nói câu đơn giản",
-      "achievedDate": "2023-03-10T00:00:00",
-      "notes": "Tiến bộ đáng kể"
-    }
-  ],
-  "challenges": [
-    {
-      "category": "SOCIAL",
-      "description": "Khó khăn trong tương tác nhóm",
-      "severity": "MODERATE",
-      "notes": "Cần hỗ trợ thêm"
-    }
-  ],
-  "goals": [
-    {
-      "category": "COMMUNICATION",
-      "description": "Tăng cường kỹ năng giao tiếp",
-      "targetDate": "2023-06-15T00:00:00",
-      "status": "IN_PROGRESS"
-    }
-  ],
   "overallProgress": "IMPROVING",
-  "recommendations": "Tiếp tục therapy và tăng cường tương tác xã hội"
+  "recommendations": "Tiếp tục can thiệp sớm"
 }
 ```
 
-#### Lấy thông tin báo cáo tiến độ
+#### Lấy báo cáo tiến độ
 ```http
 GET /api/v1/progress-reports/{id}
 GET /api/v1/progress-reports/child/{childExternalId}
-GET /api/v1/progress-reports/child/{childExternalId}/latest
-```
-
-#### Lấy danh sách báo cáo tiến độ
-```http
-GET /api/v1/progress-reports
-GET /api/v1/progress-reports/type/MONTHLY
-GET /api/v1/progress-reports/reporter/Dr. Nguyễn Thị D
-GET /api/v1/progress-reports/date-range?startDate=2023-01-01T00:00:00&endDate=2023-12-31T23:59:59
-```
-
-#### Cập nhật báo cáo tiến độ
-```http
-PUT /api/v1/progress-reports/{id}
-Content-Type: application/json
-
-{
-  "overallProgress": "SIGNIFICANT_IMPROVEMENT",
-  "recommendations": "Có thể giảm tần suất therapy"
-}
-```
-
-#### Xóa báo cáo tiến độ
-```http
-DELETE /api/v1/progress-reports/{id}
-```
-
-### Developmental Disorder Questions Management
-
-#### Tạo câu hỏi sàng lọc mới
-```http
-POST /api/v1/developmental-disorder-questions
-Content-Type: application/json
-
-{
-  "names": {
-    "en": "Autism Spectrum Disorder (ASD)",
-    "vi": "Tự kỷ (ASD)",
-    "fr": "Trouble du spectre autistique (TSA)",
-    "es": "Trastorno del espectro autista (TEA)"
-  },
-  "mainSymptoms": {
-    "en": "Difficulty with communication; Repetitive behaviors; Poor social interaction",
-    "vi": "Khó giao tiếp; Hành vi lặp lại; Kém tương tác xã hội",
-    "fr": "Difficultés de communication; Comportements répétitifs; Faible interaction sociale",
-    "es": "Dificultad en la comunicación; Comportamientos repetitivos; Pobre interacción social"
-  },
-  "detectionAgeMinMonths": 18,
-  "detectionAgeMaxMonths": 36,
-  "detectionAgeMinYears": null,
-  "detectionAgeMaxYears": null,
-  "screeningQuestions": {
-    "en": "Does the child avoid eye contact when interacting with others?; Does the child show repetitive behaviors such as hand flapping or spinning?",
-    "vi": "Trẻ có tránh nhìn vào mắt người khác khi tương tác không?; Trẻ có hành vi lặp lại như vẫy tay, xoay vòng không?",
-    "fr": "L'enfant évite-t-il le contact visuel lors des interactions?; L'enfant montre-t-il des comportements répétitifs comme battre des mains ou tourner?",
-    "es": "¿El niño evita el contacto visual al interactuar con otros?; ¿El niño muestra comportamientos repetitivos como aletear las manos o girar?"
-  }
-}
-```
-
-#### Lấy tất cả câu hỏi sàng lọc
-```http
-GET /api/v1/developmental-disorder-questions
-```
-
-#### Lấy câu hỏi theo ID
-```http
-GET /api/v1/developmental-disorder-questions/{id}
-```
-
-#### Lấy câu hỏi theo tên trong ngôn ngữ cụ thể
-```http
-GET /api/v1/developmental-disorder-questions/name/{languageCode}/{name}
-```
-
-**Ví dụ:**
-```http
-GET /api/v1/developmental-disorder-questions/name/en/Autism Spectrum Disorder (ASD)
-GET /api/v1/developmental-disorder-questions/name/vi/Tự kỷ (ASD)
-GET /api/v1/developmental-disorder-questions/name/fr/Trouble du spectre autistique (TSA)
-```
-
-#### Lấy câu hỏi theo độ tuổi (tháng)
-```http
-GET /api/v1/developmental-disorder-questions/age-range-months?minMonths=18&maxMonths=36
-```
-
-#### Lấy câu hỏi theo độ tuổi (năm)
-```http
-GET /api/v1/developmental-disorder-questions/age-range-years?minYears=2&maxYears=5
-```
-
-#### Tìm kiếm câu hỏi theo tên
-```http
-GET /api/v1/developmental-disorder-questions/search/name?name=autism
-```
-
-#### Tìm kiếm câu hỏi theo triệu chứng
-```http
-GET /api/v1/developmental-disorder-questions/search/symptoms?symptoms=communication
-```
-
-#### Tìm kiếm câu hỏi theo câu hỏi sàng lọc
-```http
-GET /api/v1/developmental-disorder-questions/search/screening-questions?questions=eye contact
-```
-
-#### Lấy câu hỏi theo ngôn ngữ có sẵn
-```http
-GET /api/v1/developmental-disorder-questions/language/{languageCode}
-```
-
-**Ví dụ:**
-```http
-GET /api/v1/developmental-disorder-questions/language/en
-GET /api/v1/developmental-disorder-questions/language/vi
-GET /api/v1/developmental-disorder-questions/language/fr
-```
-
-#### Lấy câu hỏi có tên trong ngôn ngữ cụ thể
-```http
-GET /api/v1/developmental-disorder-questions/language/{languageCode}/names
-```
-
-#### Cập nhật câu hỏi
-```http
-PUT /api/v1/developmental-disorder-questions/{id}
-Content-Type: application/json
-
-{
-  "names": {
-    "en": "Updated Autism Spectrum Disorder (ASD)",
-    "vi": "Cập nhật Tự kỷ (ASD)",
-    "fr": "Mise à jour Trouble du spectre autistique (TSA)"
-  },
-  "mainSymptoms": {
-    "en": "Updated symptoms",
-    "vi": "Triệu chứng đã cập nhật",
-    "fr": "Symptômes mis à jour"
-  },
-  "detectionAgeMinMonths": 18,
-  "detectionAgeMaxMonths": 36,
-  "screeningQuestions": {
-    "en": "Updated questions",
-    "vi": "Câu hỏi đã cập nhật",
-    "fr": "Questions mises à jour"
-  }
-}
-```
-
-#### Xóa câu hỏi
-```http
-DELETE /api/v1/developmental-disorder-questions/{id}
-```
-
-#### Kiểm tra tồn tại câu hỏi theo tên trong ngôn ngữ cụ thể
-```http
-GET /api/v1/developmental-disorder-questions/exists/name/{languageCode}/{name}
-```
-
-**Ví dụ:**
-```http
-GET /api/v1/developmental-disorder-questions/exists/name/en/Autism Spectrum Disorder (ASD)
-GET /api/v1/developmental-disorder-questions/exists/name/vi/Tự kỷ (ASD)
-```
-
-#### Đếm số lượng câu hỏi
-```http
-GET /api/v1/developmental-disorder-questions/count
-```
-
-#### Đếm số lượng câu hỏi theo ngôn ngữ
-```http
-GET /api/v1/developmental-disorder-questions/count/language/{languageCode}
-```
-
-**Ví dụ:**
-```http
-GET /api/v1/developmental-disorder-questions/count/language/en
-GET /api/v1/developmental-disorder-questions/count/language/vi
 ```
 
 ### Assessment Test Management
 
-#### Tạo bài test mới
+#### Tạo bài test đánh giá
 ```http
 POST /api/v1/assessment-tests
 Content-Type: application/json
 
 {
-  "names": {
-    "en": "Autism Diagnostic Observation Schedule, Second Edition (ADOS-2)",
-    "vi": "Bảng quan sát chẩn đoán tự kỷ, phiên bản thứ hai (ADOS-2)",
-    "fr": "Échelle d'observation pour le diagnostic de l'autisme, deuxième édition (ADOS-2)",
-    "es": "Escala de observación para el diagnóstico del autismo, segunda edición (ADOS-2)"
-  },
-  "descriptions": {
-    "en": "A standardized diagnostic assessment for autism spectrum disorders",
-    "vi": "Đánh giá chẩn đoán chuẩn hóa cho rối loạn phổ tự kỷ",
-    "fr": "Une évaluation diagnostique standardisée pour les troubles du spectre autistique",
-    "es": "Una evaluación diagnóstica estandarizada para trastornos del espectro autista"
-  },
-  "testCode": "ADOS-2",
-  "category": "AUTISM_DIAGNOSTIC",
-  "targetAgeGroup": "12_MONTHS_PLUS",
-  "estimatedDuration": 45,
-  "difficultyLevel": "DIFFICULT",
-  "administrationType": "INDIVIDUAL",
-  "requiredQualifications": "ADOS-2 Certified Administrator",
-  "status": "ACTIVE",
-  "version": "2.0"
+  "testCode": "AT_001",
+  "testName": "Bài test đánh giá phát triển toàn diện",
+  "description": "Bài test đánh giá các lĩnh vực phát triển của trẻ",
+  "ageRange": "3-6",
+  "duration": 30,
+  "status": "ACTIVE"
 }
 ```
 
-#### Lấy tất cả bài test
-```http
-GET /api/v1/assessment-tests
-```
-
-#### Lấy bài test theo ID
+#### Lấy thông tin bài test
 ```http
 GET /api/v1/assessment-tests/{id}
-```
-
-#### Lấy bài test theo mã test
-```http
 GET /api/v1/assessment-tests/code/{testCode}
 ```
 
-#### Lấy bài test theo tên trong ngôn ngữ cụ thể
-```http
-GET /api/v1/assessment-tests/name/{languageCode}/{name}
+## Quản lý Metadata
+
+Dự án sử dụng các base class để quản lý metadata chung:
+
+### BaseEntity (JPA)
+- `BaseEntity` - Base class cho tất cả JPA entities
+- Tự động quản lý `createdAt` và `updatedAt`
+- Sử dụng `@PrePersist` và `@PreUpdate` để tự động cập nhật timestamp
+
+### BaseDocument (MongoDB)
+- `BaseDocument` - Base class cho tất cả MongoDB documents
+- Tự động quản lý `createdAt` và `updatedAt`
+- Cung cấp lifecycle methods `onCreate()` và `onUpdate()`
+
+### Cấu trúc Base Classes
+```
+src/main/java/com/meowcdd/
+├── entity/base/
+│   └── BaseEntity.java          # Base class cho JPA entities
+└── document/base/
+    └── BaseDocument.java        # Base class cho MongoDB documents
 ```
 
-#### Lấy bài test theo danh mục
-```http
-GET /api/v1/assessment-tests/category/{category}
+## Tính năng chính
+
+1. **Quản lý phụ huynh**: CRUD operations cho thông tin phụ huynh
+2. **Quản lý trẻ em**: CRUD operations cho thông tin trẻ em
+3. **Quản lý rối loạn phát triển**: Lưu trữ chi tiết về các rối loạn phát triển
+4. **Báo cáo tiến độ**: Theo dõi và báo cáo tiến độ phát triển của trẻ
+5. **Bài test đánh giá**: Quản lý các bài test đánh giá phát triển
+6. **Tìm kiếm và lọc**: Hỗ trợ tìm kiếm và lọc dữ liệu theo nhiều tiêu chí
+7. **Validation**: Kiểm tra và validate dữ liệu đầu vào
+8. **Error Handling**: Xử lý lỗi toàn cục với thông báo chi tiết
+
+## Cấu trúc Project
+
+```
+src/main/java/com/meowcdd/
+├── ChildDevelopmentServiceApplication.java
+├── config/
+│   ├── NeonDatabaseConfig.java
+│   ├── MongoConfig.java
+│   └── SecurityConfig.java
+├── controller/
+│   ├── AuthController.java
+│   ├── ChildSupabaseController.java
+│   ├── CDDTestSupabaseController.java
+│   ├── ChildTestRecordSupabaseController.java
+│   └── TrackingQuestionSupabaseController.java
+├── entity/
+│   ├── base/
+│   │   └── BaseEntity.java
+│   ├── Child.java
+│   └── supabase/
+│       ├── CDDTestSupabase.java
+│       ├── ChildSupabase.java
+│       ├── ChildTestRecordSupabase.java
+│       └── TrackingQuestion.java
+├── document/
+│   ├── base/
+│   │   └── BaseDocument.java
+│   ├── AssessmentTest.java
+│   ├── CDDTest.java
+│   ├── CDDTestResult.java
+│   ├── DevelopmentalDisorderQuestion.java
+│   ├── DevelopmentDisorder.java
+│   └── ProgressReport.java
+├── dto/
+│   ├── CDDTestDto.java
+│   ├── CDDTestResultDto.java
+│   ├── ChildDto.java
+│   ├── ChildTestRecordSupabaseDto.java
+│   ├── DevelopmentalDisorderQuestionDto.java
+│   ├── DevelopmentDisorderDto.java
+│   ├── PageResponseDto.java
+│   ├── ParentDto.java
+│   └── TrackingQuestionDto.java
+├── repository/
+│   ├── mongo/
+│   └── supabase/
+│       ├── CDDTestSupabaseRepository.java
+│       ├── ChildSupabaseRepository.java
+│       ├── ChildTestRecordSupabaseRepository.java
+│       └── TrackingQuestionSupabaseRepository.java
+├── service/
+│   ├── CDDTestSupabaseService.java
+│   ├── ChildSupabaseService.java
+│   ├── ChildTestRecordSupabaseService.java
+│   └── TrackingQuestionSupabaseService.java
+└── exception/
+    ├── ErrorResponse.java
+    └── GlobalExceptionHandler.java
 ```
 
-#### Lấy bài test theo nhóm tuổi
-```http
-GET /api/v1/assessment-tests/age-group/{targetAgeGroup}
-```
+## Cấu hình Database
 
-#### Lấy bài test theo mức độ khó
-```http
-GET /api/v1/assessment-tests/difficulty/{difficultyLevel}
-```
+### Neon PostgreSQL Entities
 
-#### Lấy bài test theo loại thực hiện
-```http
-GET /api/v1/assessment-tests/administration-type/{administrationType}
-```
-
-#### Lấy bài test theo trạng thái
-```http
-GET /api/v1/assessment-tests/status/{status}
-```
-
-#### Lấy bài test đang hoạt động
-```http
-GET /api/v1/assessment-tests/active
-```
-
-#### Tìm kiếm bài test theo tên
-```http
-GET /api/v1/assessment-tests/search/name?name=autism
-```
-
-#### Tìm kiếm bài test theo mô tả
-```http
-GET /api/v1/assessment-tests/search/description?description=diagnostic
-```
-
-#### Lấy bài test theo ngôn ngữ có sẵn
-```http
-GET /api/v1/assessment-tests/language/{languageCode}
-```
-
-#### Lấy bài test theo danh mục và nhóm tuổi
-```http
-GET /api/v1/assessment-tests/category/{category}/age-group/{targetAgeGroup}
-```
-
-#### Lấy bài test theo danh mục và mức độ khó
-```http
-GET /api/v1/assessment-tests/category/{category}/difficulty/{difficultyLevel}
-```
-
-#### Lấy bài test theo loại thực hiện và trạng thái
-```http
-GET /api/v1/assessment-tests/administration-type/{administrationType}/status/{status}
-```
-
-#### Lấy bài test theo khoảng thời gian
-```http
-GET /api/v1/assessment-tests/duration-range?minDuration=30&maxDuration=60
-```
-
-#### Lấy bài test theo thời gian tối đa
-```http
-GET /api/v1/assessment-tests/max-duration/{maxDuration}
-```
-
-#### Lấy bài test theo phiên bản
-```http
-GET /api/v1/assessment-tests/version/{version}
-```
-
-#### Lấy bài test theo người cập nhật cuối
-```http
-GET /api/v1/assessment-tests/updated-by/{lastUpdatedBy}
-```
-
-#### Lấy bài test theo nhiều danh mục
-```http
-GET /api/v1/assessment-tests/categories?categories=AUTISM_DIAGNOSTIC,LANGUAGE_ASSESSMENT
-```
-
-#### Lấy bài test theo nhiều nhóm tuổi
-```http
-GET /api/v1/assessment-tests/age-groups?ageGroups=12_MONTHS_PLUS,2_YEARS_PLUS
-```
-
-#### Tìm kiếm nâng cao
-```http
-GET /api/v1/assessment-tests/advanced-search?category=AUTISM_DIAGNOSTIC&targetAgeGroup=12_MONTHS_PLUS&difficultyLevel=DIFFICULT&status=ACTIVE
-```
-
-#### Cập nhật bài test
-```http
-PUT /api/v1/assessment-tests/{id}
-Content-Type: application/json
-
-{
-  "names": {
-    "en": "Updated ADOS-2",
-    "vi": "Cập nhật ADOS-2",
-    "fr": "ADOS-2 mis à jour"
-  },
-  "descriptions": {
-    "en": "Updated description",
-    "vi": "Mô tả đã cập nhật",
-    "fr": "Description mise à jour"
-  },
-  "estimatedDuration": 50,
-  "status": "ACTIVE",
-  "version": "2.1"
-}
-```
-
-#### Xóa bài test
-```http
-DELETE /api/v1/assessment-tests/{id}
-```
-
-#### Kiểm tra tồn tại bài test theo mã
-```http
-GET /api/v1/assessment-tests/exists/code/{testCode}
-```
-
-#### Kiểm tra tồn tại bài test theo tên trong ngôn ngữ
-```http
-GET /api/v1/assessment-tests/exists/name/{languageCode}/{name}
-```
-
-#### Đếm số lượng bài test
-```http
-GET /api/v1/assessment-tests/count
-```
-
-#### Đếm số lượng bài test theo danh mục
-```http
-GET /api/v1/assessment-tests/count/category/{category}
-```
-
-#### Đếm số lượng bài test theo trạng thái
-```http
-GET /api/v1/assessment-tests/count/status/{status}
-```
-
-#### Đếm số lượng bài test theo ngôn ngữ
-```http
-GET /api/v1/assessment-tests/count/language/{languageCode}
-```
-
-## Cấu trúc dữ liệu
-
-### Parent Entity (MySQL)
-- `id` - ID tự động tăng
-- `externalId` - ID từ service khác (unique)
-- `fullName` - Họ tên đầy đủ
-- `phoneNumber` - Số điện thoại
-- `email` - Email
-- `address` - Địa chỉ
-- `dateOfBirth` - Ngày sinh
+**Child Entity:**
+- `id` - Primary key (Long)
+- `fullName` - Họ và tên trẻ (String)
 - `gender` - Giới tính (MALE, FEMALE, OTHER)
-- `createdAt` - Thời gian tạo
-- `updatedAt` - Thời gian cập nhật
-
-### Child Entity (MySQL)
-- `id` - ID tự động tăng
-- `externalId` - ID từ service khác (unique)
-- `fullName` - Họ tên đầy đủ
-- `dateOfBirth` - Ngày sinh
-- `gender` - Giới tính
-- `height` - Chiều cao (cm)
-- `weight` - Cân nặng (kg)
-- `bloodType` - Nhóm máu
-- `allergies` - Dị ứng
-- `medicalHistory` - Tiền sử bệnh
-- `registrationDate` - Ngày đăng ký
+- `dateOfBirth` - Ngày tháng năm sinh (LocalDate)
+- `currentAgeMonths` - Tuổi hiện tại theo tháng (Integer)
+- `isPremature` - Trẻ có phải sinh non không (Boolean)
+- `gestationalWeek` - Tuần thai thứ (Integer)
+- `birthWeightGrams` - Cân nặng khi sinh (Integer)
+- `specialMedicalConditions` - Tình trạng y tế đặc biệt (String)
+- `developmentalDisorderDiagnosis` - Đã từng được chẩn đoán rối loạn phát triển (YES, NO, NOT_EVALUATED, UNDER_INVESTIGATION)
+- `hasEarlyIntervention` - Có từng được can thiệp sớm (Boolean)
+- `earlyInterventionDetails` - Chi tiết can thiệp sớm (String)
+- `primaryLanguage` - Ngôn ngữ chủ yếu (String)
+- `familyDevelopmentalIssues` - Vấn đề phát triển trong gia đình (String)
+- `height` - Chiều cao (Double, cm)
+- `weight` - Cân nặng (Double, kg)
+- `bloodType` - Nhóm máu (String)
+- `allergies` - Dị ứng (String)
+- `medicalHistory` - Tiền sử bệnh (String)
+- `parentId` - ID phụ huynh (String)
+- `registrationDate` - Ngày đăng ký (LocalDateTime)
 - `status` - Trạng thái (ACTIVE, INACTIVE, SUSPENDED)
-- `parent` - Liên kết với Parent
+- `createdAt` - Thời gian tạo (LocalDateTime)
+- `updatedAt` - Thời gian cập nhật (LocalDateTime)
 
-### DevelopmentDisorder Document (MongoDB)
-- `id` - MongoDB ObjectId
-- `childExternalId` - Liên kết với Child
-- `disorderType` - Loại rối loạn
-- `severity` - Mức độ (MILD, MODERATE, SEVERE)
-- `diagnosisDate` - Ngày chẩn đoán
-- `diagnosedBy` - Bác sĩ chẩn đoán
-- `diagnosisNotes` - Ghi chú chẩn đoán
-- `symptoms` - Danh sách triệu chứng
-- `assessments` - Các đánh giá
-- `treatments` - Các phương pháp điều trị
-- `currentStatus` - Trạng thái hiện tại
-- `createdAt` - Thời gian tạo
-- `updatedAt` - Thời gian cập nhật
+**CDDTestSupabase Entity:**
+- `id` - Primary key (Long)
+- `assessmentCode` - Mã bài test (String, unique)
+- `category` - Danh mục (String)
+- `version` - Phiên bản (String)
+- `status` - Trạng thái (DRAFT, ACTIVE, INACTIVE, ARCHIVED)
+- `administrationType` - Loại thực hiện (PARENT_REPORT, PROFESSIONAL_OBSERVATION, DIRECT_ASSESSMENT, SELF_REPORT)
+- `requiredQualifications` - Yêu cầu chuyên môn (NO_QUALIFICATION_REQUIRED, PSYCHOLOGIST_REQUIRED, PEDIATRICIAN_REQUIRED, DEVELOPMENTAL_SPECIALIST_REQUIRED, THERAPIST_REQUIRED, NURSE_REQUIRED, TEACHER_REQUIRED)
+- `minAgeMonths` - Tuổi tối thiểu (Integer)
+- `maxAgeMonths` - Tuổi tối đa (Integer)
+- `estimatedDuration` - Thời gian ước tính (Integer)
+- `namesJson` - Tên bài test theo ngôn ngữ (JSON)
+- `descriptionsJson` - Mô tả theo ngôn ngữ (JSON)
+- `instructionsJson` - Hướng dẫn theo ngôn ngữ (JSON)
+- `questionsJson` - Câu hỏi (JSON)
+- `scoringCriteriaJson` - Tiêu chí chấm điểm (JSON)
+- `requiredMaterialsJson` - Vật liệu cần thiết (JSON)
+- `notesJson` - Ghi chú theo ngôn ngữ (JSON)
+- `createdAt` - Thời gian tạo (LocalDateTime)
+- `updatedAt` - Thời gian cập nhật (LocalDateTime)
 
-### ProgressReport Document (MongoDB)
-- `id` - MongoDB ObjectId
-- `childExternalId` - Liên kết với Child
-- `reportDate` - Ngày báo cáo
-- `reporter` - Người báo cáo
-- `reportType` - Loại báo cáo (MONTHLY, QUARTERLY, ANNUAL, SPECIAL)
-- `physicalDevelopment` - Phát triển thể chất (Map)
-- `cognitiveDevelopment` - Phát triển nhận thức (Map)
-- `socialDevelopment` - Phát triển xã hội (Map)
-- `emotionalDevelopment` - Phát triển cảm xúc (Map)
-- `languageDevelopment` - Phát triển ngôn ngữ (Map)
-- `milestones` - Danh sách cột mốc đạt được
-- `challenges` - Danh sách thách thức gặp phải
-- `goals` - Danh sách mục tiêu tiếp theo
-- `overallProgress` - Tiến độ tổng thể
-- `recommendations` - Khuyến nghị
-- `createdAt` - Thời gian tạo
-- `updatedAt` - Thời gian cập nhật
+**ChildTestRecordSupabase Entity:**
+- `id` - Primary key (Long)
+- `childId` - ID trẻ em (String)
+- `testId` - ID bài test (String)
+- `testType` - Loại test (CDD_TEST, ASSESSMENT_TEST)
+- `testDate` - Ngày test (LocalDateTime)
+- `startTime` - Thời gian bắt đầu (LocalDateTime)
+- `endTime` - Thời gian kết thúc (LocalDateTime)
+- `assessor` - Người đánh giá (String)
+- `environment` - Môi trường thực hiện (String)
+- `parentPresent` - Phụ huynh có mặt (Boolean)
+- `totalQuestions` - Tổng số câu hỏi (Integer)
+- `correctAnswers` - Số câu trả lời đúng (Integer)
+- `skippedQuestions` - Số câu bỏ qua (Integer)
+- `totalScore` - Tổng điểm (Float)
+- `maxScore` - Điểm tối đa (Float)
+- `percentageScore` - Phần trăm điểm (Float)
+- `resultLevel` - Mức độ kết quả (EXCELLENT, GOOD, AVERAGE, BELOW_AVERAGE, POOR)
+- `interpretation` - Diễn giải kết quả (String)
+- `notes` - Ghi chú (String)
+- `questionAnswers` - Câu trả lời (JSON)
+- `status` - Trạng thái (IN_PROGRESS, COMPLETED, ABANDONED, INVALID, REVIEWED)
+- `createdAt` - Thời gian tạo (LocalDateTime)
+- `updatedAt` - Thời gian cập nhật (LocalDateTime)
 
-### DevelopmentalDisorderQuestion Document (MongoDB)
-- `id` - MongoDB ObjectId
-- `names` - Map chứa tên rối loạn theo mã ngôn ngữ (Map<String, String>)
-- `mainSymptoms` - Map chứa triệu chứng chính theo mã ngôn ngữ (Map<String, String>)
-- `screeningQuestions` - Map chứa câu hỏi sàng lọc theo mã ngôn ngữ (Map<String, String>)
-- `detectionAgeMinMonths` - Độ tuổi phát hiện tối thiểu (tháng)
-- `detectionAgeMaxMonths` - Độ tuổi phát hiện tối đa (tháng)
-- `detectionAgeMinYears` - Độ tuổi phát hiện tối thiểu (năm)
-- `detectionAgeMaxYears` - Độ tuổi phát hiện tối đa (năm)
-- `createdAt` - Thời gian tạo
-- `updatedAt` - Thời gian cập nhật
+**TrackingQuestion Entity:**
+- `id` - Primary key (Long)
+- `domain` - Lĩnh vực (PHYSICAL, COGNITIVE, SOCIAL, EMOTIONAL, LANGUAGE, ADAPTIVE)
+- `ageRange` - Độ tuổi (String)
+- `frequency` - Tần suất (DAILY, WEEKLY, MONTHLY, QUARTERLY, YEARLY)
+- `question` - Câu hỏi (JSON)
+- `options` - Tùy chọn trả lời (JSON)
+- `category` - Danh mục (JSON)
+- `context` - Ngữ cảnh (JSON)
+- `note` - Ghi chú (String)
+- `createdAt` - Thời gian tạo (LocalDateTime)
+- `updatedAt` - Thời gian cập nhật (LocalDateTime)
 
-**Ví dụ cấu trúc đa ngôn ngữ:**
-```json
-{
-  "names": {
-    "en": "Autism Spectrum Disorder (ASD)",
-    "vi": "Tự kỷ (ASD)",
-    "fr": "Trouble du spectre autistique (TSA)",
-    "es": "Trastorno del espectro autista (TEA)"
-  },
-  "mainSymptoms": {
-    "en": "Difficulty with communication; Repetitive behaviors",
-    "vi": "Khó giao tiếp; Hành vi lặp lại",
-    "fr": "Difficultés de communication; Comportements répétitifs",
-    "es": "Dificultad en la comunicación; Comportamientos repetitivos"
-  }
-}
-```
+### MongoDB Documents
 
-### AssessmentTest Document (MongoDB)
-- `id` - MongoDB ObjectId
-- `names` - Map chứa tên bài test theo mã ngôn ngữ (Map<String, String>)
-- `descriptions` - Map chứa mô tả bài test theo mã ngôn ngữ (Map<String, String>)
-- `instructions` - Map chứa hướng dẫn thực hiện theo mã ngôn ngữ (Map<String, String>)
-- `testCode` - Mã bài test duy nhất (String)
-- `category` - Danh mục bài test (String)
-- `targetAgeGroup` - Nhóm tuổi mục tiêu (String)
-- `estimatedDuration` - Thời gian ước tính (phút)
-- `difficultyLevel` - Mức độ khó (EASY, MODERATE, DIFFICULT)
-- `sections` - Danh sách các phần của bài test (List<TestSection>)
-- `scoringCriteria` - Tiêu chí chấm điểm (Map<String, Object>)
-- `cutoffScores` - Điểm cắt cho các mức độ nghiêm trọng (Map<String, Object>)
-- `administrationType` - Loại thực hiện (INDIVIDUAL, GROUP, PARENT_REPORT, OBSERVATION)
-- `requiredQualifications` - Yêu cầu trình độ người thực hiện (String)
-- `requiredMaterials` - Danh sách vật liệu cần thiết (List<String>)
-- `administrationNotes` - Ghi chú thực hiện theo mã ngôn ngữ (Map<String, String>)
-- `validity` - Thông tin về tính hợp lệ (String)
-- `reliability` - Thông tin về độ tin cậy (String)
-- `normativeData` - Thông tin về dữ liệu chuẩn (String)
+**AssessmentTest Document:**
+- `id` - Primary key (String)
+- `testCode` - Mã bài test (String, unique)
+- `testName` - Tên bài test (String)
+- `description` - Mô tả (String)
+- `ageRange` - Độ tuổi (String)
+- `duration` - Thời gian (Integer, phút)
+- `sections` - Các phần của bài test (List<TestSection>)
+- `scoringMethod` - Phương pháp chấm điểm (String)
+- `validity` - Tính hợp lệ (String)
+- `reliability` - Độ tin cậy (String)
+- `normativeData` - Dữ liệu chuẩn (String)
 - `status` - Trạng thái (ACTIVE, INACTIVE, DRAFT, DEPRECATED)
-- `version` - Phiên bản bài test (String)
+- `version` - Phiên bản (String)
 - `lastUpdatedBy` - Người cập nhật cuối (String)
-- `createdAt` - Thời gian tạo
-- `updatedAt` - Thời gian cập nhật
+- `createdAt` - Thời gian tạo (LocalDateTime)
+- `updatedAt` - Thời gian cập nhật (LocalDateTime)
 
 **Cấu trúc TestSection:**
 ```json
@@ -891,19 +531,29 @@ src/main/java/com/meowcdd/
 1. **Quản lý phụ huynh**: CRUD operations cho thông tin phụ huynh
 2. **Quản lý trẻ em**: CRUD operations cho thông tin trẻ em
 3. **Quản lý rối loạn phát triển**: Lưu trữ chi tiết về các rối loạn phát triển
-4. **Quản lý báo cáo tiến độ**: Theo dõi và báo cáo tiến độ phát triển của trẻ
-5. **Quản lý câu hỏi sàng lọc**: Lưu trữ và quản lý các câu hỏi sàng lọc rối loạn phát triển
-6. **Quản lý bài test chuyên sâu**: Lưu trữ và quản lý các bài test đánh giá chuyên sâu
-7. **Tìm kiếm và lọc**: Tìm kiếm theo tên, lọc theo trạng thái, loại rối loạn, độ tuổi, danh mục test
-8. **Validation**: Kiểm tra dữ liệu đầu vào
-9. **Exception Handling**: Xử lý lỗi toàn cục
-10. **Logging**: Ghi log chi tiết
-11. **Data Initialization**: Tự động khởi tạo dữ liệu mẫu khi khởi động ứng dụng
+4. **Báo cáo tiến độ**: Theo dõi và báo cáo tiến độ phát triển của trẻ
+5. **Bài test đánh giá**: Quản lý các bài test đánh giá phát triển
+6. **Tìm kiếm và lọc**: Hỗ trợ tìm kiếm và lọc dữ liệu theo nhiều tiêu chí
+7. **Validation**: Kiểm tra và validate dữ liệu đầu vào
+8. **Error Handling**: Xử lý lỗi toàn cục với thông báo chi tiết
 
-## Lưu ý
+## Troubleshooting
 
-- Service này được thiết kế để tích hợp với các service khác thông qua `externalId`
-- Dữ liệu được phân tách giữa MySQL (thông tin cơ bản) và MongoDB (thông tin chi tiết)
-- Cần cấu hình đúng thông tin database trước khi chạy
-- API sử dụng RESTful conventions
-- Tất cả responses đều có format JSON
+### Lỗi thường gặp
+
+1. **NullPointerException với Hibernate**: Đã được sửa bằng cách cập nhật cấu hình Hibernate
+2. **Database connection issues**: Kiểm tra thông tin kết nối Neon PostgreSQL
+3. **MongoDB conflicts**: Đã được xử lý bằng profile configuration
+
+### Logs và Debugging
+
+```bash
+# Xem logs ứng dụng
+docker logs child-dev-service
+
+# Test database connection
+curl http://localhost:8101/api/v1/health
+
+# Check container status
+docker ps
+```

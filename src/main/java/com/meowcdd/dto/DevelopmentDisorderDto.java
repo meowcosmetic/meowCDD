@@ -18,8 +18,8 @@ public class DevelopmentDisorderDto {
     
     private String id;
     
-    @NotBlank(message = "Child external ID is required")
-    private String childExternalId;
+    @NotBlank(message = "Child ID is required")
+    private String childId;
     
     @NotBlank(message = "Disorder type is required")
     private String disorderType;

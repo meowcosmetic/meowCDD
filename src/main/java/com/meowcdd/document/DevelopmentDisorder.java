@@ -25,7 +25,7 @@ public class DevelopmentDisorder extends BaseDocument {
     private String id;
     
     @Indexed
-    private String childExternalId; // Liên kết với Child entity
+    private String childId; // Liên kết với Child entity
     
     private String disorderType; // Loại rối loạn: AUTISM, ADHD, DOWN_SYNDROME, etc.
     

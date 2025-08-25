@@ -26,7 +26,7 @@ public class ProgressReport extends BaseDocument {
     private String id;
     
     @Indexed
-    private String childExternalId; // Liên kết với Child entity
+    private String childId; // Liên kết với Child entity
     
     private LocalDateTime reportDate;
     

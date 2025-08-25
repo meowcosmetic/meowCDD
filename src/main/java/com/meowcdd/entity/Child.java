@@ -25,9 +25,6 @@ public class Child extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "external_id", unique = true, nullable = false)
-    private String externalId; // ID từ service khác
-    
     @Column(name = "full_name", nullable = false)
     private String fullName; // Họ và tên trẻ
     
@@ -51,7 +48,6 @@ public class Child extends BaseEntity {
     private Integer birthWeightGrams; // Cân nặng khi sinh (gram)
     
     @Column(name = "special_medical_conditions")
-    @Lob
     private String specialMedicalConditions; // Tình trạng y tế đặc biệt
     
     @Column(name = "developmental_disorder_diagnosis")
@@ -62,7 +58,6 @@ public class Child extends BaseEntity {
     private Boolean hasEarlyIntervention; // Có từng được can thiệp sớm/chăm sóc đặc biệt
     
     @Column(name = "early_intervention_details")
-    @Lob
     private String earlyInterventionDetails; // Chi tiết can thiệp sớm
     
     @Column(name = "primary_language")
@@ -86,7 +81,6 @@ public class Child extends BaseEntity {
     private String allergies;
     
     @Column(name = "medical_history")
-    @Lob
     private String medicalHistory;
     
     @Column(name = "registration_date", nullable = false)
