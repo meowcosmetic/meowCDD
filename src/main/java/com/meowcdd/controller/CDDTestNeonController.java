@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/neon/cdd-tests")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*")
 public class CDDTestNeonController {
 
     private final CDDTestNeonService cddTestNeonService;
