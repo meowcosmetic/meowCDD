@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/neon/cdd-tests")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 public class CDDTestNeonController {
 
     private final CDDTestNeonService cddTestNeonService;
@@ -102,6 +101,19 @@ public class CDDTestNeonController {
                 category, page, size);
         Pageable pageable = PageRequest.of(page, size);
         Page<CDDTestNeon> tests = cddTestNeonService.getCDDTestsByCategoryWithPagination(category, pageable);
+        return ResponseEntity.ok(tests);
+    }
+
+    @GetMapping("/category/{category}/status/{status}/paginated")
+    public ResponseEntity<Page<CDDTestNeon>> getCDDTestsByCategoryAndStatusWithPagination(
+            @PathVariable String category,
+            @PathVariable CDDTestNeon.Status status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("Getting CDD tests by category: {}, status: {} with pagination (page: {}, size: {})", 
+                category, status, page, size);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CDDTestNeon> tests = cddTestNeonService.getCDDTestsByCategoryAndStatusWithPagination(category, status, pageable);
         return ResponseEntity.ok(tests);
     }
 

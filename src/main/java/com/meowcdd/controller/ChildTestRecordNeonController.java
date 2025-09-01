@@ -19,7 +19,6 @@ import java.util.Optional;
 @RequestMapping({"/neon/child-test-records", "/supabase/child-test-records"})
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 public class ChildTestRecordNeonController {
 
     private final ChildTestRecordNeonService childTestRecordNeonService;

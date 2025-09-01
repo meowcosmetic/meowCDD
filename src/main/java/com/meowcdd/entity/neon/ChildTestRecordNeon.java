@@ -95,6 +95,6 @@ public class ChildTestRecordNeon extends BaseEntity {
     }
     
     public enum ResultLevel {
-        EXCELLENT, GOOD, AVERAGE, BELOW_AVERAGE, POOR, NEEDS_INTERVENTION
+        EXCELLENT, GOOD, AVERAGE, BELOW_AVERAGE, POOR, NEEDS_INTERVENTION, NEEDS_ATTENTION
     }
 }

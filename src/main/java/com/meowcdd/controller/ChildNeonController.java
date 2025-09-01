@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping({"/neon/children", "/supabase/children"})
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 public class ChildNeonController {
 
     private final ChildNeonService childNeonService;

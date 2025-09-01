@@ -128,6 +128,11 @@ public class CDDTestNeonService {
         return cddTestNeonRepository.findByCategoryWithPagination(category, pageable);
     }
 
+    public Page<CDDTestNeon> getCDDTestsByCategoryAndStatusWithPagination(String category, CDDTestNeon.Status status, Pageable pageable) {
+        log.info("Getting CDD tests by category: {} and status: {} with pagination", category, status);
+        return cddTestNeonRepository.findByCategoryAndStatusWithPagination(category, status, pageable);
+    }
+
     public Page<CDDTestNeon> searchCDDTests(String keyword, Pageable pageable) {
         log.info("Searching CDD tests with keyword: {}", keyword);
         return cddTestNeonRepository.searchByKeyword(keyword, pageable);

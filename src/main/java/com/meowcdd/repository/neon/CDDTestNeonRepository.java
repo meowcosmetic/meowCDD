@@ -51,6 +51,9 @@ public interface CDDTestNeonRepository extends JpaRepository<CDDTestNeon, Long> 
     @Query("SELECT c FROM CDDTestNeon c WHERE c.category = :category")
     Page<CDDTestNeon> findByCategoryWithPagination(@Param("category") String category, Pageable pageable);
     
+    @Query("SELECT c FROM CDDTestNeon c WHERE c.category = :category AND c.status = :status")
+    Page<CDDTestNeon> findByCategoryAndStatusWithPagination(@Param("category") String category, @Param("status") CDDTestNeon.Status status, Pageable pageable);
+    
     @Query("SELECT c FROM CDDTestNeon c WHERE c.assessmentCode LIKE %:keyword% OR c.category LIKE %:keyword%")
     Page<CDDTestNeon> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
     

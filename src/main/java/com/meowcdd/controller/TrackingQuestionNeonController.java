@@ -17,7 +17,6 @@ import java.util.Optional;
 @RequestMapping("/neon/tracking-questions")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 public class TrackingQuestionNeonController {
     
     private final TrackingQuestionNeonService trackingQuestionNeonService;
