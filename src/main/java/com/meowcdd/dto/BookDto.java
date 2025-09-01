@@ -54,8 +54,6 @@ public class BookDto {
     private Boolean isFeatured;
     
     // === THÔNG TIN BỔ SUNG ===
-    private String coverImageUrl;
-    private String previewUrl;
     private String keywords;
     private String tags;
     private String metadata;
@@ -63,4 +61,15 @@ public class BookDto {
     // === THÔNG TIN TIMESTAMP ===
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    
+    // === FILE NỘI DUNG SÁCH (LƯU TRỰC TIẾP TRONG DB) ===
+    private byte[] contentFile; // File nội dung sách (PDF, EPUB, etc.) lưu dưới dạng binary
+    private String contentFileName; // Tên file gốc
+    private String contentFileType; // Loại file: "PDF", "EPUB", "DOCX", "TXT", etc.
+    private Long contentFileSize; // Kích thước file (bytes)
+    private String contentMimeType; // MIME type của file (application/pdf, application/epub+zip, etc.)
+    private LocalDateTime contentUploadedAt; // Thời gian upload file
+    private String contentUploadedBy; // Người upload file
+    private Boolean contentIsVerified; // File đã được verify chưa
+    private LocalDateTime contentVerificationDate; // Ngày verify file
 }

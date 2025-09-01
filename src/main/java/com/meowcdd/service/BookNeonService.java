@@ -80,6 +80,57 @@ public class BookNeonService {
     }
     
     /**
+     * Tạo sách mới với file nội dung
+     */
+    public BookDto createBookWithFile(BookDto bookDto) {
+        log.info("Creating new book with file: {}", bookDto.getContentFileName());
+        
+        // Validate file size (max 10MB)
+        if (bookDto.getContentFileSize() != null && bookDto.getContentFileSize() > 10485760) {
+            throw new IllegalArgumentException("File size exceeds maximum limit of 10MB");
+        }
+        
+        // Validate supported format
+        SupportedFormat supportedFormat = supportedFormatRepository.findById(bookDto.getSupportedFormatId())
+            .orElseThrow(() -> new EntityNotFoundException("Supported format not found with id: " + bookDto.getSupportedFormatId()));
+        
+        // Validate developmental domains
+        Set<DevelopmentalDomain> developmentalDomains = new HashSet<>();
+        if (bookDto.getDevelopmentalDomainIds() != null && !bookDto.getDevelopmentalDomainIds().isEmpty()) {
+            developmentalDomains = bookDto.getDevelopmentalDomainIds().stream()
+                .map(domainId -> developmentalDomainRepository.findById(domainId)
+                    .orElseThrow(() -> new EntityNotFoundException("Developmental domain not found with id: " + domainId)))
+                .collect(Collectors.toSet());
+        }
+        
+        // Check for duplicate ISBN if provided
+        if (bookDto.getIsbn() != null && !bookDto.getIsbn().trim().isEmpty()) {
+            if (bookRepository.existsByIsbn(bookDto.getIsbn())) {
+                throw new IllegalArgumentException("Book with ISBN " + bookDto.getIsbn() + " already exists");
+            }
+        }
+        
+        Book book = convertToEntity(bookDto);
+        book.setSupportedFormat(supportedFormat);
+        book.setDevelopmentalDomains(developmentalDomains);
+        
+        // Set file-related fields
+        book.setContentFile(bookDto.getContentFile());
+        book.setContentFileName(bookDto.getContentFileName());
+        book.setContentFileType(bookDto.getContentFileType());
+        book.setContentFileSize(bookDto.getContentFileSize());
+        book.setContentMimeType(bookDto.getContentMimeType());
+        book.setContentUploadedAt(bookDto.getContentUploadedAt());
+        book.setContentUploadedBy(bookDto.getContentUploadedBy());
+        book.setContentIsVerified(bookDto.getContentIsVerified());
+        
+        Book savedBook = bookRepository.save(book);
+        log.info("Book with file created successfully with id: {}", savedBook.getId());
+        
+        return convertToDto(savedBook);
+    }
+    
+    /**
      * Cập nhật sách
      */
     public BookDto updateBook(Long id, BookDto bookDto) {
@@ -288,6 +339,67 @@ public class BookNeonService {
             .build();
     }
     
+    // === FILE OPERATIONS ===
+    
+    /**
+     * Lấy sách có file nội dung
+     */
+    @Transactional(readOnly = true)
+    public List<BookDto> getBooksWithContentFiles() {
+        log.info("Getting books with content files");
+        List<Book> books = bookRepository.findBooksWithContentFile();
+        return books.stream()
+            .map(this::convertToDto)
+            .collect(Collectors.toList());
+    }
+    
+    /**
+     * Lấy thống kê file nội dung
+     */
+    @Transactional(readOnly = true)
+    public Object getContentFileStatistics() {
+        log.info("Getting content file statistics");
+        
+        long totalFiles = bookRepository.countBooksWithContentFile();
+        Long totalSize = bookRepository.getTotalContentFileSize();
+        Double avgSize = bookRepository.getAverageContentFileSize();
+        List<Object[]> fileTypes = bookRepository.countBooksByContentFileType();
+        List<Object[]> uploaders = bookRepository.countBooksByUploader();
+        
+        java.util.Map<String, Object> statistics = new java.util.HashMap<>();
+        statistics.put("totalFiles", totalFiles);
+        statistics.put("totalSize", totalSize != null ? totalSize : 0);
+        statistics.put("averageSize", avgSize != null ? avgSize : 0);
+        statistics.put("fileTypes", fileTypes);
+        statistics.put("uploaders", uploaders);
+        
+        return statistics;
+    }
+    
+    /**
+     * Lấy sách theo loại file
+     */
+    @Transactional(readOnly = true)
+    public List<BookDto> getBooksByContentFileType(String fileType) {
+        log.info("Getting books by content file type: {}", fileType);
+        List<Book> books = bookRepository.findByContentFileType(fileType);
+        return books.stream()
+            .map(this::convertToDto)
+            .collect(Collectors.toList());
+    }
+    
+    /**
+     * Lấy sách theo người upload
+     */
+    @Transactional(readOnly = true)
+    public List<BookDto> getBooksByUploader(String uploader) {
+        log.info("Getting books by uploader: {}", uploader);
+        List<Book> books = bookRepository.findByContentUploadedBy(uploader);
+        return books.stream()
+            .map(this::convertToDto)
+            .collect(Collectors.toList());
+    }
+    
     // === HELPER METHODS ===
     
     private Book convertToEntity(BookDto dto) {
@@ -311,11 +423,18 @@ public class BookNeonService {
             .totalViews(dto.getTotalViews())
             .isActive(dto.getIsActive())
             .isFeatured(dto.getIsFeatured())
-            .coverImageUrl(dto.getCoverImageUrl())
-            .previewUrl(dto.getPreviewUrl())
             .keywords(dto.getKeywords())
             .tags(dto.getTags())
             .metadata(dto.getMetadata())
+            .contentFile(dto.getContentFile())
+            .contentFileName(dto.getContentFileName())
+            .contentFileType(dto.getContentFileType())
+            .contentFileSize(dto.getContentFileSize())
+            .contentMimeType(dto.getContentMimeType())
+            .contentUploadedAt(dto.getContentUploadedAt())
+            .contentUploadedBy(dto.getContentUploadedBy())
+            .contentIsVerified(dto.getContentIsVerified())
+            .contentVerificationDate(dto.getContentVerificationDate())
             .build();
     }
     
@@ -348,11 +467,18 @@ public class BookNeonService {
             .totalViews(entity.getTotalViews())
             .isActive(entity.getIsActive())
             .isFeatured(entity.getIsFeatured())
-            .coverImageUrl(entity.getCoverImageUrl())
-            .previewUrl(entity.getPreviewUrl())
             .keywords(entity.getKeywords())
             .tags(entity.getTags())
             .metadata(entity.getMetadata())
+            .contentFile(entity.getContentFile())
+            .contentFileName(entity.getContentFileName())
+            .contentFileType(entity.getContentFileType())
+            .contentFileSize(entity.getContentFileSize())
+            .contentMimeType(entity.getContentMimeType())
+            .contentUploadedAt(entity.getContentUploadedAt())
+            .contentUploadedBy(entity.getContentUploadedBy())
+            .contentIsVerified(entity.getContentIsVerified())
+            .contentVerificationDate(entity.getContentVerificationDate())
             .createdAt(entity.getCreatedAt())
             .updatedAt(entity.getUpdatedAt())
             .build();
@@ -377,11 +503,20 @@ public class BookNeonService {
         if (dto.getTotalViews() != null) book.setTotalViews(dto.getTotalViews());
         if (dto.getIsActive() != null) book.setIsActive(dto.getIsActive());
         if (dto.getIsFeatured() != null) book.setIsFeatured(dto.getIsFeatured());
-        if (dto.getCoverImageUrl() != null) book.setCoverImageUrl(dto.getCoverImageUrl());
-        if (dto.getPreviewUrl() != null) book.setPreviewUrl(dto.getPreviewUrl());
         if (dto.getKeywords() != null) book.setKeywords(dto.getKeywords());
         if (dto.getTags() != null) book.setTags(dto.getTags());
         if (dto.getMetadata() != null) book.setMetadata(dto.getMetadata());
+        
+        // Update file-related fields
+        if (dto.getContentFile() != null) book.setContentFile(dto.getContentFile());
+        if (dto.getContentFileName() != null) book.setContentFileName(dto.getContentFileName());
+        if (dto.getContentFileType() != null) book.setContentFileType(dto.getContentFileType());
+        if (dto.getContentFileSize() != null) book.setContentFileSize(dto.getContentFileSize());
+        if (dto.getContentMimeType() != null) book.setContentMimeType(dto.getContentMimeType());
+        if (dto.getContentUploadedAt() != null) book.setContentUploadedAt(dto.getContentUploadedAt());
+        if (dto.getContentUploadedBy() != null) book.setContentUploadedBy(dto.getContentUploadedBy());
+        if (dto.getContentIsVerified() != null) book.setContentIsVerified(dto.getContentIsVerified());
+        if (dto.getContentVerificationDate() != null) book.setContentVerificationDate(dto.getContentVerificationDate());
     }
     
     // === INNER CLASSES ===

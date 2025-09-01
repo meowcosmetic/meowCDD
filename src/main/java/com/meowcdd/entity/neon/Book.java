@@ -3,7 +3,11 @@ package com.meowcdd.entity.neon;
 import com.meowcdd.entity.base.BaseEntity;
 import com.meowcdd.entity.neon.DevelopmentalDomain;
 import com.meowcdd.entity.neon.SupportedFormat;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -94,18 +98,14 @@ public class Book extends BaseEntity {
     
     // === THÔNG TIN TRẠNG THÁI ===
     @Column(name = "is_active")
+    @lombok.Builder.Default
     private Boolean isActive = true; // Có đang hoạt động không
     
     @Column(name = "is_featured")
+    @lombok.Builder.Default
     private Boolean isFeatured = false; // Có phải sách nổi bật không
     
     // === THÔNG TIN BỔ SUNG ===
-    @Column(name = "cover_image_url")
-    private String coverImageUrl; // Ảnh bìa
-    
-    @Column(name = "preview_url")
-    private String previewUrl; // Link xem trước
-    
     @Column(name = "keywords")
     private String keywords; // Từ khóa tìm kiếm (phân cách bằng dấu phẩy)
     
@@ -114,4 +114,33 @@ public class Book extends BaseEntity {
     
     @Column(name = "metadata", columnDefinition = "TEXT")
     private String metadata; // Metadata bổ sung (JSON)
+    
+    // === FILE NỘI DUNG SÁCH (LƯU TRỰC TIẾP TRONG DB) ===
+    @Column(name = "content_file", columnDefinition = "BYTEA")
+    private byte[] contentFile; // File nội dung sách (PDF, EPUB, etc.) lưu dưới dạng binary
+    
+    @Column(name = "content_file_name")
+    private String contentFileName; // Tên file gốc
+    
+    @Column(name = "content_file_type")
+    private String contentFileType; // Loại file: "PDF", "EPUB", "DOCX", "TXT", etc.
+    
+    @Column(name = "content_file_size")
+    private Long contentFileSize; // Kích thước file (bytes)
+    
+    @Column(name = "content_mime_type")
+    private String contentMimeType; // MIME type của file (application/pdf, application/epub+zip, etc.)
+    
+    @Column(name = "content_uploaded_at")
+    private java.time.LocalDateTime contentUploadedAt; // Thời gian upload file
+    
+    @Column(name = "content_uploaded_by")
+    private String contentUploadedBy; // Người upload file
+    
+    @Column(name = "content_is_verified")
+    @lombok.Builder.Default
+    private Boolean contentIsVerified = false; // File đã được verify chưa
+    
+    @Column(name = "content_verification_date")
+    private java.time.LocalDateTime contentVerificationDate; // Ngày verify file
 }
