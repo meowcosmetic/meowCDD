@@ -226,10 +226,10 @@ CHECK (content_mime_type IN (
     'application/xml'
 ));
 
--- Add constraint for file size (max 10MB)
+-- Add constraint for file size (max 20MB)
 ALTER TABLE books 
 ADD CONSTRAINT chk_content_file_size 
-CHECK (content_file_size IS NULL OR content_file_size <= 10485760);
+CHECK (content_file_size IS NULL OR content_file_size <= 20971520);
 
 -- Create view for books with content files
 CREATE VIEW books_with_content_files AS

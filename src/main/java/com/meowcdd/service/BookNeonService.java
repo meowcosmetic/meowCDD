@@ -85,9 +85,9 @@ public class BookNeonService {
     public BookDto createBookWithFile(BookDto bookDto) {
         log.info("Creating new book with file: {}", bookDto.getContentFileName());
         
-        // Validate file size (max 10MB)
-        if (bookDto.getContentFileSize() != null && bookDto.getContentFileSize() > 10485760) {
-            throw new IllegalArgumentException("File size exceeds maximum limit of 10MB");
+        // Validate file size (max 20MB)
+        if (bookDto.getContentFileSize() != null && bookDto.getContentFileSize() > 20971520) {
+            throw new IllegalArgumentException("File size exceeds maximum limit of 20MB");
         }
         
         // Validate supported format

@@ -55,6 +55,11 @@ public class BookNeonController {
             @RequestParam("pageCount") Integer pageCount,
             @RequestParam("language") String language,
             @RequestParam("ageGroup") String ageGroup,
+            @RequestParam(value = "minAge", required = false) Integer minAge,
+            @RequestParam(value = "maxAge", required = false) Integer maxAge,
+            @RequestParam(value = "summary", required = false) String summary,
+            @RequestParam(value = "tags", required = false) String tags,
+            @RequestParam(value = "isActive", required = false) Boolean isActive,
             @RequestParam("supportedFormatId") Long supportedFormatId,
             @RequestParam("developmentalDomainIds") String developmentalDomainIds,
             @RequestParam("contentUploadedBy") String contentUploadedBy,
@@ -79,6 +84,11 @@ public class BookNeonController {
                     .pageCount(pageCount)
                     .language(language)
                     .ageGroup(ageGroup)
+                    .minAge(minAge)
+                    .maxAge(maxAge)
+                    .summary(summary)
+                    .tags(tags)
+                    .isActive(isActive != null ? isActive : Boolean.TRUE)
                     .supportedFormatId(supportedFormatId)
                     .developmentalDomainIds(domainIds.stream().collect(java.util.stream.Collectors.toSet()))
                     .contentFile(file.getBytes())
@@ -89,6 +99,8 @@ public class BookNeonController {
                     .contentUploadedAt(LocalDateTime.now())
                     .contentUploadedBy(contentUploadedBy)
                     .contentIsVerified(false)
+                    // Map tổng dung lượng file chung (fileSize) bằng kích thước file upload
+                    .fileSize(file.getSize())
                     .build();
             
             BookDto createdBook = bookService.createBookWithFile(bookDto);

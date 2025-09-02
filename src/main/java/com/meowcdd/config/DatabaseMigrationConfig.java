@@ -24,8 +24,9 @@ public class DatabaseMigrationConfig {
     @Bean
     public CommandLineRunner runMigrations() {
         return args -> {
-            log.info("Running database migrations...");
-            
+            log.info("Database migrations disabled - using manual migration scripts");
+            // Temporarily disabled to prevent startup issues
+            /*
             try {
                 // Run the migration script
                 runMigrationScript();
@@ -34,6 +35,7 @@ public class DatabaseMigrationConfig {
                 log.error("Error running database migrations: ", e);
                 throw e;
             }
+            */
         };
     }
 
