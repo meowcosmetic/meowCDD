@@ -3,6 +3,7 @@ package com.meowcdd.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -10,10 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 public class DevelopmentalProgramDto {
     private Long id;
-    private String code;
-    // name/description lưu JSON dưới dạng String
-    private String name;
-    private String description;
+    // name/description là JSON object
+    private Map<String, Object> name;
+    private Map<String, Object> description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

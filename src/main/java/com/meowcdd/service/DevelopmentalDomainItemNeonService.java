@@ -44,7 +44,6 @@ public class DevelopmentalDomainItemNeonService {
                     .orElseThrow(() -> new EntityNotFoundException("Domain not found: " + dto.getDomainId()));
             existing.setDomain(domain);
         }
-        if (dto.getCode() != null) existing.setCode(dto.getCode());
         if (dto.getTitle() != null) existing.setTitle(dto.getTitle());
         DevelopmentalDomainItem saved = repository.save(existing);
         return convertToDto(saved);
@@ -102,7 +101,6 @@ public class DevelopmentalDomainItemNeonService {
         return DevelopmentalDomainItem.builder()
                 .id(d.getId())
                 .domain(domain)
-                .code(d.getCode())
                 .title(d.getTitle())
                 .build();
     }
@@ -112,7 +110,6 @@ public class DevelopmentalDomainItemNeonService {
                 .id(e.getId())
                 .domainId(e.getDomain() != null ? e.getDomain().getId() : null)
                 .domainName(e.getDomain() != null ? e.getDomain().getName() : null)
-                .code(e.getCode())
                 .title(e.getTitle())
                 .createdAt(e.getCreatedAt())
                 .updatedAt(e.getUpdatedAt())

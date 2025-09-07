@@ -12,8 +12,7 @@ public interface DevelopmentalItemCriteriaNeonRepository extends JpaRepository<D
     List<DevelopmentalItemCriteria> findByItem_Id(Long itemId);
 
     @Query("SELECT c FROM DevelopmentalItemCriteria c WHERE " +
-           "(:keyword IS NULL OR LOWER(c.code) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-           " OR LOWER(c.description) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+           "(:keyword IS NULL OR LOWER(c.description) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<DevelopmentalItemCriteria> search(String keyword, Pageable pageable);
 }
 

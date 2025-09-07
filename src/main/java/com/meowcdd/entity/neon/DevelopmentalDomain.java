@@ -1,5 +1,6 @@
 package com.meowcdd.entity.neon;
 
+import com.meowcdd.config.converter.JsonStringConverter;
 import com.meowcdd.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -52,7 +54,8 @@ public class DevelopmentalDomain extends BaseEntity {
      * Hoặc có thể lưu dạng text thường nếu chỉ cần 1 ngôn ngữ
      */
     @Column(name = "displayed_name", nullable = false, columnDefinition = "TEXT")
-    private String displayedName;
+    @Convert(converter = JsonStringConverter.class)
+    private Map<String, Object> displayedName;
     
     /**
      * Mô tả chi tiết về lĩnh vực phát triển (song ngữ)
@@ -64,7 +67,8 @@ public class DevelopmentalDomain extends BaseEntity {
      * Hoặc có thể lưu dạng text thường nếu chỉ cần 1 ngôn ngữ
      */
     @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+    @Convert(converter = JsonStringConverter.class)
+    private Map<String, Object> description;
     
     /**
      * Phân loại lĩnh vực phát triển (dạng String để linh hoạt thêm mới)

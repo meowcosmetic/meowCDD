@@ -13,8 +13,7 @@ public interface DevelopmentalDomainItemNeonRepository extends JpaRepository<Dev
     List<DevelopmentalDomainItem> findByDomain_Id(UUID domainId);
 
     @Query("SELECT i FROM DevelopmentalDomainItem i WHERE " +
-           "(:keyword IS NULL OR LOWER(i.code) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-           " OR LOWER(i.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+           "(:keyword IS NULL OR LOWER(i.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<DevelopmentalDomainItem> search(String keyword, Pageable pageable);
 }
 

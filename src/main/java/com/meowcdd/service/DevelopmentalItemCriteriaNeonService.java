@@ -43,8 +43,10 @@ public class DevelopmentalItemCriteriaNeonService {
                     .orElseThrow(() -> new EntityNotFoundException("Domain item not found: " + dto.getItemId()));
             existing.setItem(item);
         }
-        if (dto.getCode() != null) existing.setCode(dto.getCode());
         if (dto.getDescription() != null) existing.setDescription(dto.getDescription());
+        if (dto.getMinAgeMonths() != null) existing.setMinAgeMonths(dto.getMinAgeMonths());
+        if (dto.getMaxAgeMonths() != null) existing.setMaxAgeMonths(dto.getMaxAgeMonths());
+        if (dto.getLevel() != null) existing.setLevel(dto.getLevel());
         DevelopmentalItemCriteria saved = repository.save(existing);
         return convertToDto(saved);
     }
@@ -101,8 +103,10 @@ public class DevelopmentalItemCriteriaNeonService {
         return DevelopmentalItemCriteria.builder()
                 .id(d.getId())
                 .item(item)
-                .code(d.getCode())
                 .description(d.getDescription())
+                .minAgeMonths(d.getMinAgeMonths())
+                .maxAgeMonths(d.getMaxAgeMonths())
+                .level(d.getLevel())
                 .build();
     }
 
@@ -110,9 +114,10 @@ public class DevelopmentalItemCriteriaNeonService {
         return DevelopmentalItemCriteriaDto.builder()
                 .id(e.getId())
                 .itemId(e.getItem() != null ? e.getItem().getId() : null)
-                .itemCode(e.getItem() != null ? e.getItem().getCode() : null)
-                .code(e.getCode())
                 .description(e.getDescription())
+                .minAgeMonths(e.getMinAgeMonths())
+                .maxAgeMonths(e.getMaxAgeMonths())
+                .level(e.getLevel())
                 .createdAt(e.getCreatedAt())
                 .updatedAt(e.getUpdatedAt())
                 .build();

@@ -13,6 +13,9 @@ WORKDIR /app
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 
+# Copy migration scripts
+COPY supabase/migrations/ supabase/migrations/
+
 # Change ownership to spring user
 RUN chown spring:spring /app/app.jar
 

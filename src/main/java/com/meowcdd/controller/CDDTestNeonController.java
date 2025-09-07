@@ -28,30 +28,6 @@ public class CDDTestNeonController {
         log.info("Getting all CDD tests with pagination (page: {}, size: {})", page, size);
         Pageable pageable = PageRequest.of(page, size);
         Page<CDDTestNeon> tests = cddTestNeonService.getAllCDDTestsWithPagination(pageable);
-        
-        // Log detailed data from database
-        log.info("=== DATABASE DATA DEBUG ===");
-        log.info("Total elements: {}", tests.getTotalElements());
-        log.info("Total pages: {}", tests.getTotalPages());
-        log.info("Current page: {}", tests.getNumber());
-        log.info("Page size: {}", tests.getSize());
-        
-        for (CDDTestNeon test : tests.getContent()) {
-            log.info("--- Test ID: {} ---", test.getId());
-            log.info("Assessment Code: {}", test.getAssessmentCode());
-            log.info("Category: {}", test.getCategory());
-            log.info("Status: {}", test.getStatus());
-            log.info("Names JSON: {}", test.getNamesJson());
-            log.info("Descriptions JSON: {}", test.getDescriptionsJson());
-            log.info("Instructions JSON: {}", test.getInstructionsJson());
-            log.info("Questions JSON: {}", test.getQuestionsJson());
-            log.info("Scoring Criteria JSON: {}", test.getScoringCriteriaJson());
-            log.info("Required Materials JSON: {}", test.getRequiredMaterialsJson());
-            log.info("Notes JSON: {}", test.getNotesJson());
-            log.info("--- End Test ID: {} ---", test.getId());
-        }
-        log.info("=== END DATABASE DATA DEBUG ===");
-        
         return ResponseEntity.ok(tests);
     }
 

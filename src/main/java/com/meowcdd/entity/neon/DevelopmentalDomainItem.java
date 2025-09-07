@@ -1,8 +1,10 @@
 package com.meowcdd.entity.neon;
 
+import com.meowcdd.config.converter.JsonStringConverter;
 import com.meowcdd.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.Map;
 
 import java.util.UUID;
 
@@ -28,11 +30,9 @@ public class DevelopmentalDomainItem extends BaseEntity {
     @JoinColumn(name = "domain_id", nullable = false, columnDefinition = "UUID")
     private DevelopmentalDomain domain;
 
-    @Column(name = "code", length = 20)
-    private String code;
-
     @Column(name = "title", columnDefinition = "TEXT", nullable = false)
-    private String title;
+    @Convert(converter = JsonStringConverter.class)
+    private Map<String, Object> title;
 }
 
 

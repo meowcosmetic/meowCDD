@@ -23,9 +23,6 @@ public class DevelopmentalProgramNeonService {
     private final DevelopmentalProgramNeonRepository repository;
 
     public DevelopmentalProgramDto create(DevelopmentalProgramDto dto) {
-        if (repository.existsByCode(dto.getCode())) {
-            throw new IllegalArgumentException("Program code already exists: " + dto.getCode());
-        }
         DevelopmentalProgram entity = convertToEntity(dto);
         DevelopmentalProgram saved = repository.save(entity);
         return convertToDto(saved);
@@ -34,12 +31,6 @@ public class DevelopmentalProgramNeonService {
     public DevelopmentalProgramDto update(Long id, DevelopmentalProgramDto dto) {
         DevelopmentalProgram existing = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Program not found with id: " + id));
-        if (dto.getCode() != null && !dto.getCode().equals(existing.getCode())) {
-            if (repository.existsByCode(dto.getCode())) {
-                throw new IllegalArgumentException("Program code already exists: " + dto.getCode());
-            }
-            existing.setCode(dto.getCode());
-        }
         if (dto.getName() != null) existing.setName(dto.getName());
         if (dto.getDescription() != null) existing.setDescription(dto.getDescription());
         DevelopmentalProgram saved = repository.save(existing);
@@ -92,7 +83,6 @@ public class DevelopmentalProgramNeonService {
     private DevelopmentalProgramDto convertToDto(DevelopmentalProgram e) {
         return DevelopmentalProgramDto.builder()
                 .id(e.getId())
-                .code(e.getCode())
                 .name(e.getName())
                 .description(e.getDescription())
                 .createdAt(e.getCreatedAt())
@@ -103,7 +93,6 @@ public class DevelopmentalProgramNeonService {
     private DevelopmentalProgram convertToEntity(DevelopmentalProgramDto d) {
         return DevelopmentalProgram.builder()
                 .id(d.getId())
-                .code(d.getCode())
                 .name(d.getName())
                 .description(d.getDescription())
                 .build();

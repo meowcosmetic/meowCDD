@@ -24,9 +24,7 @@ public class DatabaseMigrationConfig {
     @Bean
     public CommandLineRunner runMigrations() {
         return args -> {
-            log.info("Database migrations disabled - using manual migration scripts");
-            // Temporarily disabled to prevent startup issues
-            /*
+            log.info("Running database migrations");
             try {
                 // Run the migration script
                 runMigrationScript();
@@ -35,7 +33,6 @@ public class DatabaseMigrationConfig {
                 log.error("Error running database migrations: ", e);
                 throw e;
             }
-            */
         };
     }
 
@@ -55,6 +52,6 @@ public class DatabaseMigrationConfig {
 
     private String readMigrationScript() throws IOException {
         // Read the migration script from the file
-        return new String(Files.readAllBytes(Paths.get("check_and_create_table.sql")), StandardCharsets.UTF_8);
+        return new String(Files.readAllBytes(Paths.get("supabase/migrations/create_cdd_test_categories_table.sql")), StandardCharsets.UTF_8);
     }
 }

@@ -36,14 +36,14 @@ public class DevelopmentalDomainDto {
      * Có thể là Map<String, String> hoặc String
      * VD: {"vi": "Phát triển thể chất", "en": "Physical Development"}
      */
-    private Object displayedName;
+    private Map<String, Object> displayedName;
     
     /**
      * Mô tả chi tiết về lĩnh vực phát triển (song ngữ)
      * Có thể là Map<String, String> hoặc String
      * VD: {"vi": "Mô tả bằng tiếng Việt", "en": "Description in English"}
      */
-    private Object description;
+    private Map<String, Object> description;
     
     /**
      * Phân loại lĩnh vực phát triển (CORE, SECONDARY, SPECIALIZED, INTEGRATED)

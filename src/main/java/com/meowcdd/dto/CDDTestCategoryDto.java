@@ -9,13 +9,11 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DevelopmentalItemCriteriaDto {
+public class CDDTestCategoryDto {
     private Long id;
-    private Long itemId;
-    private Map<String, Object> description; // JSON object
-    private Integer minAgeMonths;
-    private Integer maxAgeMonths;
-    private Integer level;
+    private String code;
+    private Map<String, Object> displayedName;
+    private Map<String, Object> description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

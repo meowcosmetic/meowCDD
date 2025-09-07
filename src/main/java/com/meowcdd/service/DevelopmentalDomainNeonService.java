@@ -31,37 +31,11 @@ public class DevelopmentalDomainNeonService {
      * @return DevelopmentalDomainDto
      */
     private DevelopmentalDomainDto convertToDto(DevelopmentalDomain entity) {
-        // Convert String to Object for displayedName and description
-        Object displayedNameObj = null;
-        Object descriptionObj = null;
-        
-        if (entity.getDisplayedName() != null) {
-            try {
-                // Try to parse as JSON object
-                displayedNameObj = new com.fasterxml.jackson.databind.ObjectMapper()
-                    .readValue(entity.getDisplayedName(), Object.class);
-            } catch (Exception e) {
-                // If not valid JSON, return as string
-                displayedNameObj = entity.getDisplayedName();
-            }
-        }
-        
-        if (entity.getDescription() != null) {
-            try {
-                // Try to parse as JSON object
-                descriptionObj = new com.fasterxml.jackson.databind.ObjectMapper()
-                    .readValue(entity.getDescription(), Object.class);
-            } catch (Exception e) {
-                // If not valid JSON, return as string
-                descriptionObj = entity.getDescription();
-            }
-        }
-        
         return DevelopmentalDomainDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                .displayedName(displayedNameObj)
-                .description(descriptionObj)
+                .displayedName(entity.getDisplayedName())
+                .description(entity.getDescription())
                 .category(entity.getCategory())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
@@ -74,22 +48,9 @@ public class DevelopmentalDomainNeonService {
      * @return String representation
      */
     private String convertObjectToString(Object obj) {
-        if (obj == null) {
-            return null;
-        }
-        
-        if (obj instanceof String) {
-            return (String) obj;
-        } else {
-            // Convert object to JSON string
-            try {
-                return new com.fasterxml.jackson.databind.ObjectMapper()
-                    .writeValueAsString(obj);
-            } catch (Exception e) {
-                log.warn("Could not convert object to JSON string: {}", e.getMessage());
-                return obj.toString();
-            }
-        }
+        // No longer used; kept for compatibility if other callers exist
+        if (obj == null) return null;
+        return obj.toString();
     }
     
     /**
@@ -101,8 +62,8 @@ public class DevelopmentalDomainNeonService {
         return DevelopmentalDomain.builder()
                 .id(dto.getId())
                 .name(dto.getName())
-                .displayedName(convertObjectToString(dto.getDisplayedName()))
-                .description(convertObjectToString(dto.getDescription()))
+                .displayedName(dto.getDisplayedName())
+                .description(dto.getDescription())
                 .category(dto.getCategory())
                 .build();
     }
