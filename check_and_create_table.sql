@@ -84,3 +84,44 @@ BEGIN
         END IF;
     END IF;
 END $$;
+
+-- Create intervention method grouping tables if needed
+DO $$
+BEGIN
+    -- Create intervention_method_groups table if not exists
+    IF NOT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'intervention_method_groups') THEN
+        CREATE TABLE intervention_method_groups (
+            id BIGSERIAL PRIMARY KEY,
+            code VARCHAR(100) NOT NULL UNIQUE,
+            displayed_name JSONB NOT NULL,
+            description JSONB,
+            min_age_months INT,
+            max_age_months INT,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+            deleted_at TIMESTAMPTZ
+        );
+
+        CREATE INDEX idx_img_code ON intervention_method_groups(code);
+        CREATE INDEX idx_img_displayed_name_gin ON intervention_method_groups USING GIN (displayed_name jsonb_path_ops);
+        CREATE INDEX idx_img_created_at ON intervention_method_groups(created_at);
+    END IF;
+
+    -- Create intervention_method_group_members table if not exists
+    IF NOT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'intervention_method_group_members') THEN
+        CREATE TABLE intervention_method_group_members (
+            id BIGSERIAL PRIMARY KEY,
+            group_id BIGINT NOT NULL REFERENCES intervention_method_groups(id) ON DELETE CASCADE,
+            method_id BIGINT NOT NULL REFERENCES intervention_methods(id) ON DELETE CASCADE,
+            order_index INT,
+            notes JSONB,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+            CONSTRAINT uq_imgm_group_method UNIQUE (group_id, method_id)
+        );
+
+        CREATE INDEX idx_imgm_group_id ON intervention_method_group_members(group_id);
+        CREATE INDEX idx_imgm_method_id ON intervention_method_group_members(method_id);
+        CREATE INDEX idx_imgm_order_index ON intervention_method_group_members(order_index);
+    END IF;
+END $$;

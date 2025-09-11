@@ -21,10 +21,12 @@ public class DatabaseMigrationConfig {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Bean
+    // @Bean
     public CommandLineRunner runMigrations() {
         return args -> {
-            log.info("Running database migrations");
+            log.info("Database migrations disabled");
+            // Migration disabled to prevent startup issues
+            /*
             try {
                 // Run the migration script
                 runMigrationScript();
@@ -33,6 +35,7 @@ public class DatabaseMigrationConfig {
                 log.error("Error running database migrations: ", e);
                 throw e;
             }
+            */
         };
     }
 
