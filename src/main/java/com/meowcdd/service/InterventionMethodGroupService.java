@@ -2,8 +2,8 @@ package com.meowcdd.service;
 
 import com.meowcdd.entity.neon.InterventionMethod;
 import com.meowcdd.entity.neon.InterventionMethodGroup;
-import com.meowcdd.entity.neon.InterventionMethodGroupMember;
-import com.meowcdd.repository.neon.InterventionMethodGroupMemberRepository;
+// import com.meowcdd.entity.neon.InterventionMethodGroupMember;
+// import com.meowcdd.repository.neon.InterventionMethodGroupMemberRepository;
 import com.meowcdd.repository.neon.InterventionMethodGroupRepository;
 import com.meowcdd.repository.neon.InterventionMethodRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,7 +25,6 @@ import java.util.List;
 public class InterventionMethodGroupService {
 
     private final InterventionMethodGroupRepository groupRepository;
-    private final InterventionMethodGroupMemberRepository memberRepository;
     private final InterventionMethodRepository methodRepository;
 
     public InterventionMethodGroup createGroup(InterventionMethodGroup group) {
@@ -66,45 +65,7 @@ public class InterventionMethodGroupService {
         groupRepository.deleteById(id);
     }
 
-    // Members management
-    public InterventionMethodGroupMember addMember(Long groupId, Long methodId, Integer orderIndex, String notes) {
-        InterventionMethodGroup group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + groupId));
-        InterventionMethod method = methodRepository.findById(methodId)
-                .orElseThrow(() -> new EntityNotFoundException("Method not found: " + methodId));
-        if (memberRepository.existsByGroupIdAndMethodId(groupId, methodId)) {
-            throw new IllegalArgumentException("Method already in group");
-        }
-        InterventionMethodGroupMember member = InterventionMethodGroupMember.builder()
-                .group(group)
-                .method(method)
-                .orderIndex(orderIndex)
-                .notes(notes)
-                .build();
-        return memberRepository.save(member);
-    }
-
-    public InterventionMethodGroupMember updateMember(Long memberId, Integer orderIndex, String notes) {
-        InterventionMethodGroupMember existing = memberRepository.findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException("Member not found: " + memberId));
-        if (orderIndex != null) existing.setOrderIndex(orderIndex);
-        if (notes != null) existing.setNotes(notes);
-        return memberRepository.save(existing);
-    }
-
-    public void removeMember(Long memberId) {
-        if (!memberRepository.existsById(memberId)) {
-            throw new EntityNotFoundException("Member not found: " + memberId);
-        }
-        memberRepository.deleteById(memberId);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<InterventionMethodGroupMember> listMembers(Long groupId, int page, int size, String sortBy, String sortDir) {
-        Sort sort = "desc".equalsIgnoreCase(sortDir) ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return memberRepository.findByGroupId(groupId, pageable);
-    }
+    // Members management removed: a Method now belongs to exactly one Group
 }
 
 

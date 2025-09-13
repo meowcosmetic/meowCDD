@@ -1,9 +1,10 @@
 package com.meowcdd.controller;
 
 import com.meowcdd.entity.neon.InterventionMethodGroup;
-import com.meowcdd.entity.neon.InterventionMethodGroupMember;
+import com.meowcdd.dto.InterventionMethodDto;
 import org.springframework.data.domain.Page;
 import com.meowcdd.service.InterventionMethodGroupService;
+import com.meowcdd.service.InterventionMethodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,38 +48,4 @@ public class InterventionMethodGroupController {
         service.deleteGroup(id);
         return ResponseEntity.noContent().build();
     }
-
-    // Members
-    public record AddMemberRequest(Long methodId, Integer orderIndex, String notes) {}
-
-    @PostMapping("/{groupId}/members")
-    public ResponseEntity<InterventionMethodGroupMember> addMember(@PathVariable Long groupId,
-                                                                   @RequestBody AddMemberRequest body) {
-        return ResponseEntity.ok(service.addMember(groupId, body.methodId(), body.orderIndex(), body.notes()));
-    }
-
-    public record UpdateMemberRequest(Integer orderIndex, String notes) {}
-
-    @PatchMapping("/members/{memberId}")
-    public ResponseEntity<InterventionMethodGroupMember> updateMember(@PathVariable Long memberId,
-                                                                      @RequestBody UpdateMemberRequest body) {
-        return ResponseEntity.ok(service.updateMember(memberId, body.orderIndex(), body.notes()));
-    }
-
-    @DeleteMapping("/members/{memberId}")
-    public ResponseEntity<Void> removeMember(@PathVariable Long memberId) {
-        service.removeMember(memberId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{groupId}/members")
-    public ResponseEntity<Page<InterventionMethodGroupMember>> listMembers(@PathVariable Long groupId,
-                                                                           @RequestParam(defaultValue = "0") int page,
-                                                                           @RequestParam(defaultValue = "10") int size,
-                                                                           @RequestParam(defaultValue = "orderIndex") String sortBy,
-                                                                           @RequestParam(defaultValue = "asc") String sortDir) {
-        return ResponseEntity.ok(service.listMembers(groupId, page, size, sortBy, sortDir));
-    }
 }
-
-

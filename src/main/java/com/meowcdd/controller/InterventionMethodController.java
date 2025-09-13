@@ -9,7 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/neon/intervention-methods")
@@ -67,19 +70,34 @@ public class InterventionMethodController {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<PageResponseDto<InterventionMethodDto>> search(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(service.search(keyword, page, size));
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<List<InterventionMethodDto>> findByGroupId(@PathVariable Long groupId) {
+        return ResponseEntity.ok(service.findByGroupId(groupId));
     }
 
-    @GetMapping("/age-range")
-    public ResponseEntity<List<InterventionMethodDto>> findByAgeRange(
-            @RequestParam(required = false) Integer minAge,
-            @RequestParam(required = false) Integer maxAge) {
-        return ResponseEntity.ok(service.findByAgeRange(minAge, maxAge));
+    @GetMapping("/group/{groupId}/paginated")
+    public ResponseEntity<Map<String, Object>> findByGroupIdPaginated(
+            @PathVariable Long groupId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            List<InterventionMethodDto> allMethods = service.findByGroupId(groupId);
+            
+            Map<String, Object> result = new HashMap<>();
+            result.put("content", allMethods);
+            result.put("pageNumber", page);
+            result.put("pageSize", size);
+            result.put("totalElements", allMethods.size());
+            result.put("totalPages", 1);
+            result.put("isLast", true);
+            
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("Error in paginated endpoint", e);
+            Map<String, Object> errorResult = new HashMap<>();
+            errorResult.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(errorResult);
+        }
     }
 }
 

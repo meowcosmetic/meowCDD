@@ -2,18 +2,18 @@ package com.meowcdd.entity.neon;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "intervention_methods")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class InterventionMethod {
@@ -25,11 +25,17 @@ public class InterventionMethod {
     @Column(name = "code", nullable = false, unique = true, length = 100)
     private String code;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "displayed_name", nullable = false, columnDefinition = "jsonb")
     private String displayedName;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "description", columnDefinition = "jsonb")
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "group_id", nullable = false, foreignKey = @ForeignKey(name = "fk_method_group"))
+    private InterventionMethodGroup group;
 
     @Column(name = "min_age_months")
     private Integer minAgeMonths;
@@ -48,4 +54,3 @@ public class InterventionMethod {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 }
-

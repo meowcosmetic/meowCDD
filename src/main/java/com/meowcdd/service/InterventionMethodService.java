@@ -1,9 +1,13 @@
 package com.meowcdd.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meowcdd.dto.InterventionMethodDto;
 import com.meowcdd.dto.PageResponseDto;
 import com.meowcdd.entity.neon.InterventionMethod;
+import com.meowcdd.entity.neon.InterventionMethodGroup;
 import com.meowcdd.repository.neon.InterventionMethodRepository;
+import com.meowcdd.repository.neon.InterventionMethodGroupRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,15 +30,26 @@ import java.util.stream.Collectors;
 public class InterventionMethodService {
 
     private final InterventionMethodRepository repository;
+    private final InterventionMethodGroupRepository groupRepository;
+    private final ObjectMapper objectMapper;
 
     public InterventionMethodDto create(InterventionMethodDto dto) {
         if (dto.getCode() == null || dto.getCode().isBlank()) {
             throw new IllegalArgumentException("code is required");
         }
+        if (dto.getGroupId() == null) {
+            throw new IllegalArgumentException("groupId is required");
+        }
         if (repository.existsByCode(dto.getCode())) {
             throw new IllegalArgumentException("code already exists: " + dto.getCode());
         }
+        
+        // Validate group exists
+        InterventionMethodGroup group = groupRepository.findById(dto.getGroupId())
+                .orElseThrow(() -> new EntityNotFoundException("Intervention method group not found with id: " + dto.getGroupId()));
+        
         InterventionMethod entity = convertToEntity(dto);
+        entity.setGroup(group);
         InterventionMethod saved = repository.save(entity);
         return convertToDto(saved);
     }
@@ -48,8 +64,20 @@ public class InterventionMethodService {
             }
             existing.setCode(dto.getCode());
         }
-        if (dto.getDisplayedName() != null) existing.setDisplayedName(dto.getDisplayedName());
-        if (dto.getDescription() != null) existing.setDescription(dto.getDescription());
+        if (dto.getDisplayedName() != null) {
+            try {
+                existing.setDisplayedName(objectMapper.writeValueAsString(dto.getDisplayedName()));
+            } catch (Exception ex) {
+                throw new IllegalArgumentException("Failed to serialize displayedName to JSON", ex);
+            }
+        }
+        if (dto.getDescription() != null) {
+            try {
+                existing.setDescription(objectMapper.writeValueAsString(dto.getDescription()));
+            } catch (Exception ex) {
+                throw new IllegalArgumentException("Failed to serialize description to JSON", ex);
+            }
+        }
         if (dto.getMinAgeMonths() != null) existing.setMinAgeMonths(dto.getMinAgeMonths());
         if (dto.getMaxAgeMonths() != null) existing.setMaxAgeMonths(dto.getMaxAgeMonths());
         
@@ -89,21 +117,7 @@ public class InterventionMethodService {
     public PageResponseDto<InterventionMethodDto> getAll(int page, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<InterventionMethod> p = repository.findAllActive(pageable);
-        return PageResponseDto.<InterventionMethodDto>builder()
-                .content(p.getContent().stream().map(this::convertToDto).toList())
-                .pageNumber(p.getNumber())
-                .pageSize(p.getSize())
-                .totalElements(p.getTotalElements())
-                .totalPages(p.getTotalPages())
-                .isLast(p.isLast())
-                .build();
-    }
-
-    @Transactional(readOnly = true)
-    public PageResponseDto<InterventionMethodDto> search(String keyword, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<InterventionMethod> p = repository.search(keyword, pageable);
+        Page<InterventionMethod> p = repository.findAll(pageable);
         return PageResponseDto.<InterventionMethodDto>builder()
                 .content(p.getContent().stream().map(this::convertToDto).toList())
                 .pageNumber(p.getNumber())
@@ -116,40 +130,98 @@ public class InterventionMethodService {
 
     @Transactional(readOnly = true)
     public List<InterventionMethodDto> getAll() {
-        return repository.findByDeletedAtIsNull().stream()
+        return repository.findAll().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<InterventionMethodDto> findByAgeRange(Integer minAge, Integer maxAge) {
-        return repository.findByAgeRange(minAge, maxAge).stream()
+    public List<InterventionMethodDto> findByGroupId(Long groupId) {
+        return repository.findAll().stream()
+                .filter(method -> method.getGroup() != null && method.getGroup().getId().equals(groupId))
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    private InterventionMethodDto convertToDto(InterventionMethod e) {
-        return InterventionMethodDto.builder()
-                .id(e.getId())
-                .code(e.getCode())
-                .displayedName(e.getDisplayedName())
-                .description(e.getDescription())
-                .minAgeMonths(e.getMinAgeMonths())
-                .maxAgeMonths(e.getMaxAgeMonths())
-                .createdAt(e.getCreatedAt())
-                .updatedAt(e.getUpdatedAt())
+    @Transactional(readOnly = true)
+    public PageResponseDto<InterventionMethodDto> findByGroupId(Long groupId, int page, int size) {
+        List<InterventionMethod> allMethods = repository.findAll();
+        List<InterventionMethod> filteredMethods = allMethods.stream()
+                .filter(method -> method.getGroup() != null && method.getGroup().getId().equals(groupId))
+                .collect(Collectors.toList());
+        
+        // Manual pagination
+        int start = page * size;
+        int end = Math.min((start + size), filteredMethods.size());
+        
+        List<InterventionMethod> pagedMethods;
+        if (start >= filteredMethods.size() || filteredMethods.isEmpty()) {
+            pagedMethods = new ArrayList<>();
+        } else {
+            pagedMethods = filteredMethods.subList(start, end);
+        }
+        
+        List<InterventionMethodDto> content = pagedMethods.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        
+        return PageResponseDto.<InterventionMethodDto>builder()
+                .content(content)
+                .pageNumber(page)
+                .pageSize(size)
+                .totalElements((long) filteredMethods.size())
+                .totalPages((int) Math.ceil((double) filteredMethods.size() / size))
+                .isLast(page >= (int) Math.ceil((double) filteredMethods.size() / size) - 1)
                 .build();
     }
 
+    private InterventionMethodDto convertToDto(InterventionMethod e) {
+        InterventionMethodDto dto = new InterventionMethodDto();
+        dto.setId(e.getId());
+        dto.setCode(e.getCode());
+        
+        // Convert String to JsonNode
+        try {
+            if (e.getDisplayedName() != null && !e.getDisplayedName().trim().isEmpty()) {
+                dto.setDisplayedName(objectMapper.readTree(e.getDisplayedName()));
+            }
+            if (e.getDescription() != null && !e.getDescription().trim().isEmpty()) {
+                dto.setDescription(objectMapper.readTree(e.getDescription()));
+            }
+        } catch (Exception ex) {
+            log.warn("Failed to parse JSON from database for method {}: {}", e.getCode(), ex.getMessage());
+            // Set as null if parsing fails
+            dto.setDisplayedName(null);
+            dto.setDescription(null);
+        }
+        
+        dto.setGroupId(e.getGroup() != null ? e.getGroup().getId() : null);
+        dto.setMinAgeMonths(e.getMinAgeMonths());
+        dto.setMaxAgeMonths(e.getMaxAgeMonths());
+        dto.setCreatedAt(e.getCreatedAt());
+        dto.setUpdatedAt(e.getUpdatedAt());
+        return dto;
+    }
+
     private InterventionMethod convertToEntity(InterventionMethodDto d) {
-        return InterventionMethod.builder()
-                .id(d.getId())
-                .code(d.getCode())
-                .displayedName(d.getDisplayedName())
-                .description(d.getDescription())
-                .minAgeMonths(d.getMinAgeMonths())
-                .maxAgeMonths(d.getMaxAgeMonths())
-                .build();
+        InterventionMethod entity = new InterventionMethod();
+        entity.setId(d.getId());
+        entity.setCode(d.getCode());
+        // Convert JsonNode to String
+        try {
+            if (d.getDisplayedName() != null) {
+                entity.setDisplayedName(objectMapper.writeValueAsString(d.getDisplayedName()));
+            }
+            if (d.getDescription() != null) {
+                entity.setDescription(objectMapper.writeValueAsString(d.getDescription()));
+            }
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Failed to serialize JSON to string", ex);
+        }
+        
+        entity.setMinAgeMonths(d.getMinAgeMonths());
+        entity.setMaxAgeMonths(d.getMaxAgeMonths());
+        return entity;
     }
 }
 
