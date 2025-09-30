@@ -1,0 +1,76 @@
+{
+  "title": "📝 Cách Thức Can Thiệp (Kèm Checklist)",
+  "content": {
+    "vi": {
+      "introduction": "Hướng dẫn can thiệp phát triển khả năng xác định hướng âm thanh cho trẻ em",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Chuẩn bị môi trường",
+          "checklist": [
+            "Chọn không gian yên tĩnh, ít tiếng ồn",
+            "Chuẩn bị đồ chơi phát ra âm thanh rõ ràng, hấp dẫn bé (lục lạc, đồ chơi kêu tiếng động vật, nhạc cụ nhỏ)",
+            "Chọn đồ chơi/vật dụng có màu sắc bắt mắt, dễ thu hút sự chú ý của bé"
+          ]
+        },
+        {
+          "step": 2,
+          "title": "Thực hiện can thiệp (5–6 lần mỗi buổi)",
+          "checklist": [
+            "Làm mẫu: Người lớn phát âm thanh cách bé 0.5–1m, vừa quay đầu nhìn về hướng âm, vừa nói rõ ràng: \"Nghe kìa!\"",
+            "Tương tác: Phát âm thanh kèm cử chỉ chỉ hướng và lời nói: \"Con nhìn xem!\". Đợi bé phản ứng",
+            "Khen ngợi/Thưởng: Nếu bé quay đầu → khen ngay: \"Giỏi quá! Con nhìn thấy rồi!\", kèm phần thưởng (ôm, đồ chơi yêu thích trong vài giây)",
+            "Tăng dần độ khó: Khi bé làm tốt ở khoảng cách 0.5–1m → tăng dần khoảng cách hoặc giảm độ lớn âm thanh",
+            "Kết hợp giác quan: Thêm ánh sáng/màu sắc. Ví dụ: khi rung lục lạc, bật đèn flash nhỏ gần lục lạc"
+          ]
+        },
+        {
+          "step": 3,
+          "title": "Ghi chép kết quả",
+          "checklist": [
+            "Ghi lại số lần bé phản ứng đúng/sai trong mỗi buổi",
+            "Theo dõi tiến độ hàng ngày hoặc hàng tuần để đánh giá hiệu quả"
+          ]
+        }
+      ],
+      "example": {
+        "title": "Ví dụ cụ thể",
+        "description": "Bé An (18 tháng tuổi): Khó quay đầu theo hướng âm thanh. Dùng lục lạc, rung cách bé 0.5m, nói \"Ting ting!\". Nếu bé chưa quay → lặp lại vài lần. Nếu bé quay → khen ngay: \"Giỏi quá, con nghe thấy tiếng lục lạc rồi!\". Sau đó tăng dần khoảng cách và giảm âm lượng."
+      },
+      "important_notes": [
+        "Kiên trì: Can thiệp cần sự kiên nhẫn, không nản khi bé chưa tiến bộ ngay",
+        "Cá nhân hoá: Điều chỉnh phương pháp phù hợp sở thích và khả năng bé",
+        "Tư vấn chuyên môn: Nếu bé không tiến triển sau thời gian can thiệp → cần hỏi ý kiến bác sĩ/chuyên gia trị liệu"
+      ],
+      "troubleshooting": [
+        {
+          "problem": "Bé không chú ý",
+          "solution": "Dùng đồ chơi bé thích hoặc âm thanh thú vị hơn"
+        },
+        {
+          "problem": "Bé dễ phân tâm",
+          "solution": "Chọn môi trường yên tĩnh, loại bỏ yếu tố gây xao nhãng"
+        },
+        {
+          "problem": "Bé không phản ứng",
+          "solution": "Kiểm tra khả năng nghe → có thể bé gặp vấn đề thính giác, cần khám y tế"
+        }
+      ],
+      "tips": [
+        "Ứng dụng điện thoại/máy tính bảng phát âm thanh",
+        "Kết hợp với trò chơi khác",
+        "Tích hợp vào sinh hoạt hằng ngày của bé"
+      ],
+      "conclusion": "Giúp bé học cách xác định hướng âm thanh cần: Kiên trì, Phương pháp phù hợp, Theo dõi sát sao. Mỗi bé đều khác nhau → cần kiên nhẫn & tình yêu thương. Quan trọng nhất là sự phối hợp giữa gia đình và chuyên gia để đạt hiệu quả tốt nhất."
+    }
+  },
+  "postType": "INTERVENTION_METHOD",
+  "difficultyLevel": 2,
+  "targetAgeMinMonths": 12,
+  "targetAgeMaxMonths": 24,
+  "estimatedDurationMinutes": 15,
+  "tags": "can thiệp, âm thanh, phát triển, trẻ em, hướng dẫn",
+  "isPublished": true,
+  "author": "Chuyên gia phát triển trẻ em",
+  "version": "1.0"
+}
