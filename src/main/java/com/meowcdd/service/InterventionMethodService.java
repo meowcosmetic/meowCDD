@@ -40,7 +40,7 @@ public class InterventionMethodService {
         if (dto.getGroupId() == null) {
             throw new IllegalArgumentException("groupId is required");
         }
-        if (repository.existsByCode(dto.getCode())) {
+        if (repository.existsByCodeActive(dto.getCode())) {
             throw new IllegalArgumentException("code already exists: " + dto.getCode());
         }
         
@@ -59,7 +59,7 @@ public class InterventionMethodService {
                 .orElseThrow(() -> new EntityNotFoundException("Intervention method not found with id: " + id));
         
         if (dto.getCode() != null && !dto.getCode().equals(existing.getCode())) {
-            if (repository.existsByCode(dto.getCode())) {
+            if (repository.existsByCodeActive(dto.getCode())) {
                 throw new IllegalArgumentException("code already exists: " + dto.getCode());
             }
             existing.setCode(dto.getCode());
@@ -87,14 +87,14 @@ public class InterventionMethodService {
 
     @Transactional(readOnly = true)
     public InterventionMethodDto getById(Long id) {
-        InterventionMethod entity = repository.findById(id)
+        InterventionMethod entity = repository.findByIdActive(id)
                 .orElseThrow(() -> new EntityNotFoundException("Intervention method not found with id: " + id));
         return convertToDto(entity);
     }
 
     @Transactional(readOnly = true)
     public InterventionMethodDto getByCode(String code) {
-        InterventionMethod entity = repository.findByCode(code)
+        InterventionMethod entity = repository.findByCodeActive(code)
                 .orElseThrow(() -> new EntityNotFoundException("Intervention method not found with code: " + code));
         return convertToDto(entity);
     }
@@ -117,7 +117,7 @@ public class InterventionMethodService {
     public PageResponseDto<InterventionMethodDto> getAll(int page, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<InterventionMethod> p = repository.findAll(pageable);
+        Page<InterventionMethod> p = repository.findAllActive(pageable);
         return PageResponseDto.<InterventionMethodDto>builder()
                 .content(p.getContent().stream().map(this::convertToDto).toList())
                 .pageNumber(p.getNumber())
@@ -130,14 +130,14 @@ public class InterventionMethodService {
 
     @Transactional(readOnly = true)
     public List<InterventionMethodDto> getAll() {
-        return repository.findAll().stream()
+        return repository.findAllActive().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<InterventionMethodDto> findByGroupId(Long groupId) {
-        return repository.findAll().stream()
+        return repository.findAllActive().stream()
                 .filter(method -> method.getGroup() != null && method.getGroup().getId().equals(groupId))
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -145,7 +145,7 @@ public class InterventionMethodService {
 
     @Transactional(readOnly = true)
     public PageResponseDto<InterventionMethodDto> findByGroupId(Long groupId, int page, int size) {
-        List<InterventionMethod> allMethods = repository.findAll();
+        List<InterventionMethod> allMethods = repository.findAllActive();
         List<InterventionMethod> filteredMethods = allMethods.stream()
                 .filter(method -> method.getGroup() != null && method.getGroup().getId().equals(groupId))
                 .collect(Collectors.toList());

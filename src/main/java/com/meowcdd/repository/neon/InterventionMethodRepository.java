@@ -13,6 +13,24 @@ import java.util.Optional;
 
 @Repository
 public interface InterventionMethodRepository extends JpaRepository<InterventionMethod, Long> {
+    
+    // Filter out soft deleted records
+    @Query("SELECT e FROM InterventionMethod e WHERE e.deletedAt IS NULL")
+    List<InterventionMethod> findAllActive();
+    
+    @Query("SELECT e FROM InterventionMethod e WHERE e.deletedAt IS NULL")
+    Page<InterventionMethod> findAllActive(Pageable pageable);
+    
+    @Query("SELECT e FROM InterventionMethod e WHERE e.code = :code AND e.deletedAt IS NULL")
+    Optional<InterventionMethod> findByCodeActive(@Param("code") String code);
+    
+    @Query("SELECT COUNT(e) > 0 FROM InterventionMethod e WHERE e.code = :code AND e.deletedAt IS NULL")
+    boolean existsByCodeActive(@Param("code") String code);
+    
+    @Query("SELECT e FROM InterventionMethod e WHERE e.id = :id AND e.deletedAt IS NULL")
+    Optional<InterventionMethod> findByIdActive(@Param("id") Long id);
+    
+    // Keep original methods for internal use (including soft deleted)
     boolean existsByCode(String code);
     Optional<InterventionMethod> findByCode(String code);
     Page<InterventionMethod> findAll(Pageable pageable);
