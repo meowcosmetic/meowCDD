@@ -27,18 +27,18 @@ public class DevelopmentalDomainItemNeonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DevelopmentalDomainItemDto> update(@PathVariable Long id, @RequestBody DevelopmentalDomainItemDto dto) {
+    public ResponseEntity<DevelopmentalDomainItemDto> update(@PathVariable UUID id, @RequestBody DevelopmentalDomainItemDto dto) {
         log.info("Updating domain item id: {}", id);
         return ResponseEntity.ok(service.update(id, dto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DevelopmentalDomainItemDto> getById(@PathVariable Long id) {
+    public ResponseEntity<DevelopmentalDomainItemDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,0 +1,10 @@
+{
+  "itemId": "27213c8b-43e2-4083-bd84-a9d32d6592b9",
+  "description": {
+    "vi": "Trẻ có thể quay đầu về phía âm thanh vui nhộn",
+    "en": "Child can turn head toward cheerful sounds"
+  },
+  "minAgeMonths": 3,
+  "maxAgeMonths": 6,
+  "level": 1
+}

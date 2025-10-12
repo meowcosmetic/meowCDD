@@ -1,0 +1,220 @@
+{
+  "examples": [
+    {
+      "name": "1. Lưu bài post mới (Draft)",
+      "description": "Tạo bài post mới nhưng chưa publish",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Phương pháp can thiệp phát triển ngôn ngữ cho trẻ 3-6 tháng",
+          "content": {
+            "vi": "Hướng dẫn chi tiết các hoạt động phát triển ngôn ngữ: 1) Tạo môi trường âm thanh phong phú với đồ chơi phát âm thanh, 2) Sử dụng giọng nói đa dạng khi nói chuyện với trẻ, 3) Khuyến khích trẻ phản ứng với âm thanh bằng cách vỗ tay hoặc cười. Vật liệu cần: Đồ chơi phát âm thanh, Sách tranh, Nhạc cụ đơn giản. Mẹo: Thực hiện 15-20 phút mỗi ngày, tốt nhất vào buổi sáng khi trẻ tỉnh táo.",
+            "en": "Detailed guide for language development activities: 1) Create rich sound environment with sound toys, 2) Use varied voice tones when talking to child, 3) Encourage child to respond to sounds by clapping or smiling. Materials needed: Sound toys, Picture books, Simple instruments. Tips: Practice 15-20 minutes daily, best in the morning when child is alert."
+          },
+          "postType": "INTERVENTION_METHOD",
+          "difficultyLevel": 2,
+          "targetAgeMinMonths": 3,
+          "targetAgeMaxMonths": 6,
+          "estimatedDurationMinutes": 20,
+          "tags": "ngôn ngữ,phát triển,âm thanh,trẻ em,can thiệp",
+          "isPublished": false,
+          "author": "Dr. Nguyen Van A",
+          "version": "1.0",
+          "criteriaId": 1
+        }
+      },
+      "expectedResponse": {
+        "id": 1,
+        "title": "Phương pháp can thiệp phát triển ngôn ngữ cho trẻ 3-6 tháng",
+        "content": {
+          "vi": "Hướng dẫn chi tiết các hoạt động phát triển ngôn ngữ...",
+          "en": "Detailed guide for language development activities..."
+        },
+        "postType": "INTERVENTION_METHOD",
+        "difficultyLevel": 2,
+        "targetAgeMinMonths": 3,
+        "targetAgeMaxMonths": 6,
+        "estimatedDurationMinutes": 20,
+        "tags": "ngôn ngữ,phát triển,âm thanh,trẻ em,can thiệp",
+        "isPublished": false,
+        "author": "Dr. Nguyen Van A",
+        "version": "1.0",
+        "criteriaId": 1,
+        "criteriaDescription": "Trẻ có thể quay đầu về phía âm thanh",
+        "createdAt": "2025-09-30T17:30:00",
+        "updatedAt": "2025-09-30T17:30:00"
+      }
+    },
+    {
+      "name": "2. Lưu bài post và publish ngay",
+      "description": "Tạo bài post và đánh dấu published = true",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Checklist đánh giá phát triển vận động thô cho trẻ 6-12 tháng",
+          "content": {
+            "vi": "Checklist đánh giá phát triển vận động thô: □ Trẻ có thể ngồi không cần hỗ trợ (6-8 tháng), □ Trẻ có thể bò bằng tay và đầu gối (8-10 tháng), □ Trẻ có thể đứng vịn vào đồ vật (9-11 tháng), □ Trẻ có thể đi men theo đồ vật (10-12 tháng), □ Trẻ có thể đứng độc lập trong vài giây (11-12 tháng). Lưu ý: Nếu trẻ chưa đạt được ít nhất 3/5 mốc phát triển, cần tham khảo ý kiến chuyên gia.",
+            "en": "Gross motor development checklist: □ Child can sit without support (6-8 months), □ Child can crawl on hands and knees (8-10 months), □ Child can stand holding onto furniture (9-11 months), □ Child can cruise along furniture (10-12 months), □ Child can stand independently for a few seconds (11-12 months). Note: If child hasn't achieved at least 3/5 milestones, consult a specialist."
+          },
+          "postType": "CHECKLIST",
+          "difficultyLevel": 1,
+          "targetAgeMinMonths": 6,
+          "targetAgeMaxMonths": 12,
+          "estimatedDurationMinutes": 10,
+          "tags": "checklist,vận động,đánh giá,trẻ em,phát triển",
+          "isPublished": true,
+          "author": "ThS. Tran Thi B",
+          "version": "1.0",
+          "criteriaId": 2
+        }
+      }
+    },
+    {
+      "name": "3. Cập nhật bài post đã có",
+      "description": "Sửa đổi bài post đã tồn tại",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/neon/intervention-posts/1",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Phương pháp can thiệp phát triển ngôn ngữ cho trẻ 3-6 tháng (Cập nhật)",
+          "difficultyLevel": 3,
+          "estimatedDurationMinutes": 25,
+          "version": "1.1",
+          "tags": "ngôn ngữ,phát triển,âm thanh,trẻ em,can thiệp,cập nhật"
+        }
+      }
+    },
+    {
+      "name": "4. Lưu bài post với content dạng string JSON",
+      "description": "Gửi content như string JSON thay vì object",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Ví dụ hoạt động 'Trò chơi bong bóng xà phòng' cho trẻ 2-3 tuổi",
+          "content": "{\"vi\":\"Hoạt động: Trò chơi bong bóng xà phòng. Mục tiêu: Phát triển kỹ năng theo dõi bằng mắt và phối hợp tay-mắt. Cách thực hiện: 1) Thổi bong bóng xà phòng, 2) Yêu cầu trẻ chỉ tay theo bong bóng, 3) Khuyến khích trẻ nói 'bong bóng' khi nhìn thấy, 4) Để trẻ cố gắng bắt bong bóng. Vật liệu: Dung dịch bong bóng xà phòng, ống thổi. Thời gian: 10-15 phút. Kết quả mong đợi: Trẻ có thể theo dõi bong bóng bằng mắt và chỉ tay.\",\"en\":\"Activity: Soap bubble game. Objective: Develop eye tracking and hand-eye coordination skills. Implementation: 1) Blow soap bubbles, 2) Ask child to point at bubbles, 3) Encourage child to say 'bubble' when seeing them, 4) Let child try to catch bubbles. Materials: Soap bubble solution, bubble wand. Duration: 10-15 minutes. Expected outcome: Child can track bubbles with eyes and point at them.\"}",
+          "postType": "EXAMPLE",
+          "difficultyLevel": 2,
+          "targetAgeMinMonths": 24,
+          "targetAgeMaxMonths": 36,
+          "estimatedDurationMinutes": 15,
+          "tags": "ví dụ,trò chơi,bong bóng,vận động,thị giác",
+          "isPublished": true,
+          "author": "CN. Pham Thi D",
+          "version": "1.0",
+          "criteriaId": 4
+        }
+      }
+    },
+    {
+      "name": "5. Lưu bài post với programId",
+      "description": "Tạo bài post liên kết với chương trình can thiệp",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Hướng dẫn quy trình can thiệp cho trẻ tự kỷ",
+          "content": {
+            "vi": "Quy trình can thiệp cho trẻ tự kỷ: Bước 1: Đánh giá toàn diện về khả năng hiện tại của trẻ, Bước 2: Xây dựng kế hoạch can thiệp cá nhân hóa, Bước 3: Thực hiện can thiệp hàng ngày với sự tham gia của gia đình, Bước 4: Theo dõi và đánh giá tiến độ định kỳ, Bước 5: Điều chỉnh kế hoạch dựa trên kết quả. Thời gian: 6-12 tháng, tần suất: 3-5 lần/tuần, mỗi lần 45-60 phút.",
+            "en": "Intervention process for children with autism: Step 1: Comprehensive assessment of child's current abilities, Step 2: Develop personalized intervention plan, Step 3: Implement daily intervention with family involvement, Step 4: Monitor and evaluate progress regularly, Step 5: Adjust plan based on results. Duration: 6-12 months, frequency: 3-5 times/week, 45-60 minutes each session."
+          },
+          "postType": "GUIDELINE",
+          "difficultyLevel": 4,
+          "targetAgeMinMonths": 12,
+          "targetAgeMaxMonths": 36,
+          "estimatedDurationMinutes": 60,
+          "tags": "hướng dẫn,tự kỷ,can thiệp,quy trình,chuyên sâu",
+          "isPublished": true,
+          "author": "PGS.TS. Le Van C",
+          "version": "2.1",
+          "criteriaId": 3,
+          "programId": 1
+        }
+      }
+    },
+    {
+      "name": "6. Publish bài post sau khi tạo",
+      "description": "Tạo bài post draft rồi publish sau",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts/1/publish",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {}
+      }
+    },
+    {
+      "name": "7. Unpublish bài post",
+      "description": "Hủy publish bài post",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts/1/unpublish",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {}
+      }
+    }
+  ],
+  "commonFields": {
+    "required": [
+      "title",
+      "content",
+      "postType",
+      "criteriaId"
+    ],
+    "optional": [
+      "difficultyLevel",
+      "targetAgeMinMonths", 
+      "targetAgeMaxMonths",
+      "estimatedDurationMinutes",
+      "tags",
+      "isPublished",
+      "author",
+      "version",
+      "programId"
+    ],
+    "postTypes": [
+      "INTERVENTION_METHOD",
+      "CHECKLIST", 
+      "GUIDELINE",
+      "EXAMPLE",
+      "TIP",
+      "TROUBLESHOOTING",
+      "CONCLUSION"
+    ],
+    "difficultyLevels": [
+      "1 - Rất dễ (phụ huynh)",
+      "2 - Dễ (cộng tác viên mới)",
+      "3 - Trung bình (chuyên viên)",
+      "4 - Khó (chuyên gia)",
+      "5 - Rất khó (chuyên gia cao cấp)"
+    ]
+  },
+  "notes": {
+    "content": "Có thể gửi content dưới dạng object hoặc string JSON",
+    "isPublished": "Mặc định là false nếu không gửi",
+    "version": "Nên tăng version khi cập nhật",
+    "tags": "Phân cách bằng dấu phẩy, không có khoảng trắng",
+    "ageMonths": "Tính theo tháng, ví dụ: 12 tháng = 1 tuổi"
+  }
+}
+

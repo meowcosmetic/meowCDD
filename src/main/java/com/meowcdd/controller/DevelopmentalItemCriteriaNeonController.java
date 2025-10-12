@@ -60,7 +60,7 @@ public class DevelopmentalItemCriteriaNeonController {
     }
 
     @GetMapping("/item/{itemId}")
-    public ResponseEntity<List<DevelopmentalItemCriteriaDto>> getByItem(@PathVariable Long itemId) {
+    public ResponseEntity<List<DevelopmentalItemCriteriaDto>> getByItem(@PathVariable java.util.UUID itemId) {
         return ResponseEntity.ok(service.getByItem(itemId));
     }
 }

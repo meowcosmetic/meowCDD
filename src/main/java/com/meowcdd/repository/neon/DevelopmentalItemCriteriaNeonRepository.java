@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface DevelopmentalItemCriteriaNeonRepository extends JpaRepository<DevelopmentalItemCriteria, Long> {
-    List<DevelopmentalItemCriteria> findByItem_Id(Long itemId);
+    List<DevelopmentalItemCriteria> findByItem_Id(UUID itemId);
 
     @Query("SELECT c FROM DevelopmentalItemCriteria c WHERE " +
            "(:keyword IS NULL OR LOWER(c.description) LIKE LOWER(CONCAT('%', :keyword, '%')))")

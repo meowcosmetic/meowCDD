@@ -28,8 +28,21 @@ public class DevelopmentalItemCriteriaNeonService {
     private final DevelopmentalDomainItemNeonRepository itemRepository;
 
     public DevelopmentalItemCriteriaDto create(DevelopmentalItemCriteriaDto dto) {
-        DevelopmentalDomainItem item = itemRepository.findById(dto.getItemId())
-                .orElseThrow(() -> new EntityNotFoundException("Domain item not found: " + dto.getItemId()));
+        DevelopmentalDomainItem item;
+        if (dto.getItemPublicId() != null) {
+            item = itemRepository.findById(dto.getItemPublicId())
+                .orElseThrow(() -> new EntityNotFoundException("Domain item not found by id: " + dto.getItemPublicId()));
+        } else if (dto.getItemId() != null) {
+            try {
+                java.util.UUID uuid = java.util.UUID.fromString(dto.getItemId());
+                item = itemRepository.findById(uuid)
+                    .orElseThrow(() -> new EntityNotFoundException("Domain item not found by id: " + dto.getItemId()));
+            } catch (IllegalArgumentException iae) {
+                throw new IllegalArgumentException("itemId must be a valid UUID string");
+            }
+        } else {
+            throw new IllegalArgumentException("Either itemPublicId (UUID) or itemId (UUID string) is required");
+        }
         DevelopmentalItemCriteria entity = convertToEntity(dto, item);
         DevelopmentalItemCriteria saved = repository.save(entity);
         return convertToDto(saved);
@@ -38,10 +51,22 @@ public class DevelopmentalItemCriteriaNeonService {
     public DevelopmentalItemCriteriaDto update(Long id, DevelopmentalItemCriteriaDto dto) {
         DevelopmentalItemCriteria existing = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Criteria not found: " + id));
-        if (dto.getItemId() != null && (existing.getItem() == null || !existing.getItem().getId().equals(dto.getItemId()))) {
-            DevelopmentalDomainItem item = itemRepository.findById(dto.getItemId())
-                    .orElseThrow(() -> new EntityNotFoundException("Domain item not found: " + dto.getItemId()));
+        if (dto.getItemPublicId() != null) {
+            DevelopmentalDomainItem item = itemRepository.findById(dto.getItemPublicId())
+                .orElseThrow(() -> new EntityNotFoundException("Domain item not found by id: " + dto.getItemPublicId()));
             existing.setItem(item);
+        } else if (dto.getItemId() != null) {
+            DevelopmentalDomainItem item;
+            try {
+                java.util.UUID uuid = java.util.UUID.fromString(dto.getItemId());
+                if (existing.getItem() == null || !existing.getItem().getId().equals(uuid)) {
+                    item = itemRepository.findById(uuid)
+                        .orElseThrow(() -> new EntityNotFoundException("Domain item not found by id: " + dto.getItemId()));
+                    existing.setItem(item);
+                }
+            } catch (IllegalArgumentException iae) {
+                throw new IllegalArgumentException("itemId must be a valid UUID string");
+            }
         }
         if (dto.getDescription() != null) existing.setDescription(dto.getDescription());
         if (dto.getMinAgeMonths() != null) existing.setMinAgeMonths(dto.getMinAgeMonths());
@@ -95,7 +120,7 @@ public class DevelopmentalItemCriteriaNeonService {
     }
 
     @Transactional(readOnly = true)
-    public List<DevelopmentalItemCriteriaDto> getByItem(Long itemId) {
+    public List<DevelopmentalItemCriteriaDto> getByItem(java.util.UUID itemId) {
         return repository.findByItem_Id(itemId).stream().map(this::convertToDto).toList();
     }
 
@@ -113,7 +138,7 @@ public class DevelopmentalItemCriteriaNeonService {
     private DevelopmentalItemCriteriaDto convertToDto(DevelopmentalItemCriteria e) {
         return DevelopmentalItemCriteriaDto.builder()
                 .id(e.getId())
-                .itemId(e.getItem() != null ? e.getItem().getId() : null)
+                .itemId(e.getItem() != null && e.getItem().getId() != null ? e.getItem().getId().toString() : null)
                 .description(e.getDescription())
                 .minAgeMonths(e.getMinAgeMonths())
                 .maxAgeMonths(e.getMaxAgeMonths())

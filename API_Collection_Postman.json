@@ -1,0 +1,858 @@
+{
+	"info": {
+		"_postman_id": "meowcdd-api-collection",
+		"name": "MeowCDD API Collection",
+		"description": "Complete API collection for Child Development Service - includes all CRUD operations for roles, role details, collaborators, and existing entities",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Roles Management",
+			"item": [
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roleName\": \"Therapist\",\n  \"description\": {\n    \"vi\": \"Chuyên viên trị liệu chuyên nghiệp\",\n    \"en\": \"Professional therapy specialist\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/roles",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "roles"]
+						}
+					}
+				},
+				{
+					"name": "Get All Roles",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/roles?page=0&size=10&sortBy=roleName&sortDir=asc",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "roles"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"},
+								{"key": "sortBy", "value": "roleName"},
+								{"key": "sortDir", "value": "asc"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Role by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/roles/{{roleId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "roles", "{{roleId}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Role",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roleName\": \"Senior Therapist\",\n  \"description\": {\n    \"vi\": \"Chuyên viên trị liệu cấp cao với nhiều kinh nghiệm\",\n    \"en\": \"Senior therapy specialist with extensive experience\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/roles/{{roleId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "roles", "{{roleId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Role",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/neon/roles/{{roleId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "roles", "{{roleId}}"]
+						}
+					}
+				},
+				{
+					"name": "Search Roles",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/roles/search?keyword=therapist&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "roles", "search"],
+							"query": [
+								{"key": "keyword", "value": "therapist"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Roles by Name",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/roles/by-name?roleName=therapist",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "roles", "by-name"],
+							"query": [
+								{"key": "roleName", "value": "therapist"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Role Details Management",
+			"item": [
+				{
+					"name": "Create Role Detail",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roleId\": \"{{roleId}}\",\n  \"educationRequirement\": {\n    \"vi\": \"Tốt nghiệp đại học chuyên ngành tâm lý học hoặc y khoa\",\n    \"en\": \"Bachelor's degree in Psychology or Medicine\"\n  },\n  \"mainTasks\": {\n    \"vi\": \"Đánh giá và điều trị trẻ em có vấn đề phát triển\",\n    \"en\": \"Assess and treat children with developmental issues\"\n  },\n  \"requiredSkills\": {\n    \"vi\": \"Kỹ năng giao tiếp, phân tích hành vi, lập kế hoạch điều trị\",\n    \"en\": \"Communication skills, behavior analysis, treatment planning\"\n  },\n  \"certificationsRequired\": {\n    \"vi\": \"Chứng chỉ hành nghề tâm lý học\",\n    \"en\": \"Psychology practice license\"\n  },\n  \"experienceRequirement\": {\n    \"vi\": \"Tối thiểu 2 năm kinh nghiệm làm việc với trẻ em\",\n    \"en\": \"Minimum 2 years experience working with children\"\n  },\n  \"notes\": {\n    \"vi\": \"Cần có khả năng làm việc nhóm và báo cáo chi tiết\",\n    \"en\": \"Must be able to work in teams and provide detailed reports\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/role-details",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "role-details"]
+						}
+					}
+				},
+				{
+					"name": "Get All Role Details",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/role-details?page=0&size=10&sortBy=detailId&sortDir=asc",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "role-details"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"},
+								{"key": "sortBy", "value": "detailId"},
+								{"key": "sortDir", "value": "asc"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Role Detail by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/role-details/{{detailId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "role-details", "{{detailId}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Role Detail",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"educationRequirement\": {\n    \"vi\": \"Tốt nghiệp thạc sĩ chuyên ngành tâm lý học lâm sàng\",\n    \"en\": \"Master's degree in Clinical Psychology\"\n  },\n  \"experienceRequirement\": {\n    \"vi\": \"Tối thiểu 3 năm kinh nghiệm\",\n    \"en\": \"Minimum 3 years experience\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/role-details/{{detailId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "role-details", "{{detailId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Role Detail",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/neon/role-details/{{detailId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "role-details", "{{detailId}}"]
+						}
+					}
+				},
+				{
+					"name": "Search Role Details",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/role-details/search?keyword=therapist&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "role-details", "search"],
+							"query": [
+								{"key": "keyword", "value": "therapist"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Role Details by Role ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/role-details/role/{{roleId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "role-details", "role", "{{roleId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Collaborators Management",
+			"item": [
+				{
+					"name": "Create Collaborator",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"{{userId}}\",\n  \"roleId\": \"{{roleId}}\",\n  \"specialization\": \"Child Psychology\",\n  \"experienceYears\": 3,\n  \"certification\": {\n    \"vi\": \"Chứng chỉ hành nghề tâm lý học số 12345\",\n    \"en\": \"Psychology Practice License #12345\"\n  },\n  \"organization\": \"ABC Therapy Center\",\n  \"availability\": {\n    \"vi\": \"Thứ 2-6: 8h-17h, Thứ 7: 8h-12h\",\n    \"en\": \"Mon-Fri: 8AM-5PM, Sat: 8AM-12PM\"\n  },\n  \"status\": \"PENDING\",\n  \"notes\": {\n    \"vi\": \"Chuyên về điều trị tự kỷ và ADHD\",\n    \"en\": \"Specializes in autism and ADHD treatment\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/collaborators",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "collaborators"]
+						}
+					}
+				},
+				{
+					"name": "Get All Collaborators",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/collaborators?page=0&size=10&sortBy=createdAt&sortDir=desc",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "collaborators"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"},
+								{"key": "sortBy", "value": "createdAt"},
+								{"key": "sortDir", "value": "desc"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Collaborator by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/collaborators/{{collaboratorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "collaborators", "{{collaboratorId}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Collaborator",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"specialization\": \"Advanced Child Psychology\",\n  \"experienceYears\": 5,\n  \"status\": \"ACTIVE\",\n  \"organization\": \"XYZ Advanced Therapy Center\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/collaborators/{{collaboratorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "collaborators", "{{collaboratorId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Collaborator",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/neon/collaborators/{{collaboratorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "collaborators", "{{collaboratorId}}"]
+						}
+					}
+				},
+				{
+					"name": "Search Collaborators",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/collaborators/search?keyword=psychology&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "collaborators", "search"],
+							"query": [
+								{"key": "keyword", "value": "psychology"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Collaborators by User ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/collaborators/user/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "collaborators", "user", "{{userId}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Collaborators by Role ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/collaborators/role/{{roleId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "collaborators", "role", "{{roleId}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Collaborators by Status",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/collaborators/status/ACTIVE",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "collaborators", "status", "ACTIVE"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Developmental Domain Items",
+			"item": [
+				{
+					"name": "Create Domain Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"domainId\": \"27213c8b-43e2-4083-bd84-a9d32d6592b9\",\n  \"title\": {\n    \"vi\": \"Nhìn về phía phát ra những âm thanh vui nhộn\",\n    \"en\": \"Turn toward the source of the cheerful sounds.\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-domain-items",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-domain-items"]
+						}
+					}
+				},
+				{
+					"name": "Get All Domain Items",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-domain-items?page=0&size=10&sortBy=id&sortDir=asc",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-domain-items"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"},
+								{"key": "sortBy", "value": "id"},
+								{"key": "sortDir", "value": "asc"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Domain Item by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-domain-items/{{itemId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-domain-items", "{{itemId}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Domain Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": {\n    \"vi\": \"Phản ứng với âm thanh vui nhộn\",\n    \"en\": \"React to cheerful sounds\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-domain-items/{{itemId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-domain-items", "{{itemId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Domain Item",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-domain-items/{{itemId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-domain-items", "{{itemId}}"]
+						}
+					}
+				},
+				{
+					"name": "Search Domain Items",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-domain-items/search?keyword=sound&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-domain-items", "search"],
+							"query": [
+								{"key": "keyword", "value": "sound"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Domain Items by Domain ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-domain-items/domain/{{domainId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-domain-items", "domain", "{{domainId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Developmental Item Criteria",
+			"item": [
+				{
+					"name": "Create Item Criteria",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"itemId\": \"{{itemId}}\",\n  \"description\": {\n    \"vi\": \"Trẻ có thể quay đầu về phía âm thanh\",\n    \"en\": \"Child can turn head toward sound\"\n  },\n  \"minAgeMonths\": 3,\n  \"maxAgeMonths\": 6,\n  \"level\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-item-criteria",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-item-criteria"]
+						}
+					}
+				},
+				{
+					"name": "Get All Item Criteria",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-item-criteria?page=0&size=10&sortBy=id&sortDir=asc",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-item-criteria"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"},
+								{"key": "sortBy", "value": "id"},
+								{"key": "sortDir", "value": "asc"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Item Criteria by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-item-criteria/{{criteriaId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-item-criteria", "{{criteriaId}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Item Criteria",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": {\n    \"vi\": \"Trẻ phản ứng nhanh với âm thanh\",\n    \"en\": \"Child responds quickly to sound\"\n  },\n  \"level\": 2\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-item-criteria/{{criteriaId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-item-criteria", "{{criteriaId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Item Criteria",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-item-criteria/{{criteriaId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-item-criteria", "{{criteriaId}}"]
+						}
+					}
+				},
+				{
+					"name": "Search Item Criteria",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-item-criteria/search?keyword=sound&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-item-criteria", "search"],
+							"query": [
+								{"key": "keyword", "value": "sound"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Item Criteria by Item ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/developmental-item-criteria/item/{{itemId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "developmental-item-criteria", "item", "{{itemId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Intervention Posts Management",
+			"item": [
+				{
+					"name": "Create Intervention Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Phương pháp can thiệp phát triển ngôn ngữ cho trẻ 3-6 tháng\",\n  \"content\": {\n    \"vi\": \"Hướng dẫn chi tiết các hoạt động phát triển ngôn ngữ: 1) Tạo môi trường âm thanh phong phú, 2) Sử dụng giọng nói đa dạng, 3) Khuyến khích trẻ phản ứng với âm thanh. Vật liệu cần: Đồ chơi phát âm thanh, Sách tranh, Nhạc cụ đơn giản. Mẹo: Thực hiện 15-20 phút mỗi ngày.\",\n    \"en\": \"Detailed guide for language development activities: 1) Create rich sound environment, 2) Use varied voice tones, 3) Encourage child to respond to sounds. Materials needed: Sound toys, Picture books, Simple instruments. Tips: Practice 15-20 minutes daily.\"\n  },\n  \"postType\": \"INTERVENTION_METHOD\",\n  \"difficultyLevel\": 2,\n  \"targetAgeMinMonths\": 3,\n  \"targetAgeMaxMonths\": 6,\n  \"estimatedDurationMinutes\": 20,\n  \"tags\": \"ngôn ngữ,phát triển,âm thanh,trẻ em\",\n  \"isPublished\": false,\n  \"author\": \"Dr. Nguyen Van A\",\n  \"version\": \"1.0\",\n  \"criteriaId\": {{criteriaId}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts"]
+						}
+					}
+				},
+				{
+					"name": "Get All Intervention Posts",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts"]
+						}
+					}
+				},
+				{
+					"name": "Get All Intervention Posts (Paginated)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/paginated?page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "paginated"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Intervention Post by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/{{postId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "{{postId}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Intervention Post",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Phương pháp can thiệp phát triển ngôn ngữ cho trẻ 3-6 tháng (Cập nhật)\",\n  \"difficultyLevel\": 3,\n  \"estimatedDurationMinutes\": 25,\n  \"version\": \"1.1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/{{postId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "{{postId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Intervention Post",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/{{postId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "{{postId}}"]
+						}
+					}
+				},
+				{
+					"name": "Search Intervention Posts",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/search?keyword=ngôn ngữ&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "search"],
+							"query": [
+								{"key": "keyword", "value": "ngôn ngữ"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Posts by Criteria ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/criteria/{{criteriaId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "criteria", "{{criteriaId}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Posts by Criteria ID (Ordered)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/criteria/{{criteriaId}}/ordered",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "criteria", "{{criteriaId}}", "ordered"]
+						}
+					}
+				},
+				{
+					"name": "Get Posts by Program ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/program/{{programId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "program", "{{programId}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Posts by Type",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/type/INTERVENTION_METHOD",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "type", "INTERVENTION_METHOD"]
+						}
+					}
+				},
+				{
+					"name": "Get Posts by Target Age",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/age/6",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "age", "6"]
+						}
+					}
+				},
+				{
+					"name": "Filter Posts",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/filter?criteriaId={{criteriaId}}&postType=INTERVENTION_METHOD&isPublished=true&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "filter"],
+							"query": [
+								{"key": "criteriaId", "value": "{{criteriaId}}"},
+								{"key": "postType", "value": "INTERVENTION_METHOD"},
+								{"key": "isPublished", "value": "true"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Publish Post",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/{{postId}}/publish",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "{{postId}}", "publish"]
+						}
+					}
+				},
+				{
+					"name": "Unpublish Post",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{baseUrl}}/neon/intervention-posts/{{postId}}/unpublish",
+							"host": ["{{baseUrl}}"],
+							"path": ["neon", "intervention-posts", "{{postId}}", "unpublish"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "roleId",
+			"value": "replace-with-actual-role-id",
+			"type": "string"
+		},
+		{
+			"key": "detailId",
+			"value": "replace-with-actual-detail-id",
+			"type": "string"
+		},
+		{
+			"key": "collaboratorId",
+			"value": "replace-with-actual-collaborator-id",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "replace-with-actual-user-id",
+			"type": "string"
+		},
+		{
+			"key": "itemId",
+			"value": "replace-with-actual-item-id",
+			"type": "string"
+		},
+		{
+			"key": "criteriaId",
+			"value": "replace-with-actual-criteria-id",
+			"type": "string"
+		},
+		{
+			"key": "domainId",
+			"value": "replace-with-actual-domain-id",
+			"type": "string"
+		},
+		{
+			"key": "postId",
+			"value": "replace-with-actual-post-id",
+			"type": "string"
+		},
+		{
+			"key": "programId",
+			"value": "replace-with-actual-program-id",
+			"type": "string"
+		}
+	]
+}

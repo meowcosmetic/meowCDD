@@ -36,7 +36,7 @@ public class DevelopmentalDomainItemNeonService {
         return convertToDto(saved);
     }
 
-    public DevelopmentalDomainItemDto update(Long id, DevelopmentalDomainItemDto dto) {
+    public DevelopmentalDomainItemDto update(UUID id, DevelopmentalDomainItemDto dto) {
         DevelopmentalDomainItem existing = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Item not found: " + id));
         if (dto.getDomainId() != null && (existing.getDomain() == null || !existing.getDomain().getId().equals(dto.getDomainId()))) {
@@ -50,13 +50,13 @@ public class DevelopmentalDomainItemNeonService {
     }
 
     @Transactional(readOnly = true)
-    public DevelopmentalDomainItemDto getById(Long id) {
+    public DevelopmentalDomainItemDto getById(UUID id) {
         DevelopmentalDomainItem entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Item not found: " + id));
         return convertToDto(entity);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Item not found: " + id);
         }

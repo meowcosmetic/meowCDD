@@ -1,12 +1,13 @@
 package com.meowcdd.entity.neon;
 
-import com.meowcdd.config.converter.JsonStringConverter;
 import com.meowcdd.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Map;
-
 import java.util.UUID;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * Item thuộc lĩnh vực phát triển (Developmental Domain Item)
@@ -23,16 +24,23 @@ import java.util.UUID;
 public class DevelopmentalDomainItem extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", columnDefinition = "UUID")
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "domain_id", nullable = false, columnDefinition = "UUID")
     private DevelopmentalDomain domain;
 
-    @Column(name = "title", columnDefinition = "TEXT", nullable = false)
-    @Convert(converter = JsonStringConverter.class)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "title", columnDefinition = "jsonb", nullable = false)
     private Map<String, Object> title;
+
+    @PrePersist
+    private void ensureId() {
+        if (id == null) {
+            id = UUID.randomUUID();
+        }
+    }
 }
 
 

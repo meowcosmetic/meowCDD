@@ -1,0 +1,220 @@
+{
+  "examples": [
+    {
+      "name": "1. Phương pháp can thiệp (INTERVENTION_METHOD)",
+      "description": "Bài post hướng dẫn phương pháp can thiệp phát triển ngôn ngữ",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Phương pháp can thiệp phát triển ngôn ngữ cho trẻ 3-6 tháng",
+          "content": {
+            "vi": "Hướng dẫn chi tiết các hoạt động phát triển ngôn ngữ: 1) Tạo môi trường âm thanh phong phú với đồ chơi phát âm thanh, 2) Sử dụng giọng nói đa dạng khi nói chuyện với trẻ, 3) Khuyến khích trẻ phản ứng với âm thanh bằng cách vỗ tay hoặc cười. Vật liệu cần: Đồ chơi phát âm thanh, Sách tranh, Nhạc cụ đơn giản. Mẹo: Thực hiện 15-20 phút mỗi ngày, tốt nhất vào buổi sáng khi trẻ tỉnh táo.",
+            "en": "Detailed guide for language development activities: 1) Create rich sound environment with sound toys, 2) Use varied voice tones when talking to child, 3) Encourage child to respond to sounds by clapping or smiling. Materials needed: Sound toys, Picture books, Simple instruments. Tips: Practice 15-20 minutes daily, best in the morning when child is alert."
+          },
+          "postType": "INTERVENTION_METHOD",
+          "difficultyLevel": 2,
+          "targetAgeMinMonths": 3,
+          "targetAgeMaxMonths": 6,
+          "estimatedDurationMinutes": 20,
+          "tags": "ngôn ngữ,phát triển,âm thanh,trẻ em,can thiệp",
+          "isPublished": false,
+          "author": "Dr. Nguyen Van A",
+          "version": "1.0",
+          "criteriaId": 1
+        }
+      }
+    },
+    {
+      "name": "2. Checklist (CHECKLIST)",
+      "description": "Bài post dạng checklist để kiểm tra tiến độ phát triển",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Checklist đánh giá phát triển vận động thô cho trẻ 6-12 tháng",
+          "content": {
+            "vi": "Checklist đánh giá phát triển vận động thô: □ Trẻ có thể ngồi không cần hỗ trợ (6-8 tháng), □ Trẻ có thể bò bằng tay và đầu gối (8-10 tháng), □ Trẻ có thể đứng vịn vào đồ vật (9-11 tháng), □ Trẻ có thể đi men theo đồ vật (10-12 tháng), □ Trẻ có thể đứng độc lập trong vài giây (11-12 tháng). Lưu ý: Nếu trẻ chưa đạt được ít nhất 3/5 mốc phát triển, cần tham khảo ý kiến chuyên gia.",
+            "en": "Gross motor development checklist: □ Child can sit without support (6-8 months), □ Child can crawl on hands and knees (8-10 months), □ Child can stand holding onto furniture (9-11 months), □ Child can cruise along furniture (10-12 months), □ Child can stand independently for a few seconds (11-12 months). Note: If child hasn't achieved at least 3/5 milestones, consult a specialist."
+          },
+          "postType": "CHECKLIST",
+          "difficultyLevel": 1,
+          "targetAgeMinMonths": 6,
+          "targetAgeMaxMonths": 12,
+          "estimatedDurationMinutes": 10,
+          "tags": "checklist,vận động,đánh giá,trẻ em,phát triển",
+          "isPublished": true,
+          "author": "ThS. Tran Thi B",
+          "version": "1.0",
+          "criteriaId": 2
+        }
+      }
+    },
+    {
+      "name": "3. Hướng dẫn (GUIDELINE)",
+      "description": "Bài post hướng dẫn chi tiết về quy trình can thiệp",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Hướng dẫn quy trình can thiệp cho trẻ tự kỷ",
+          "content": {
+            "vi": "Quy trình can thiệp cho trẻ tự kỷ: Bước 1: Đánh giá toàn diện về khả năng hiện tại của trẻ, Bước 2: Xây dựng kế hoạch can thiệp cá nhân hóa, Bước 3: Thực hiện can thiệp hàng ngày với sự tham gia của gia đình, Bước 4: Theo dõi và đánh giá tiến độ định kỳ, Bước 5: Điều chỉnh kế hoạch dựa trên kết quả. Thời gian: 6-12 tháng, tần suất: 3-5 lần/tuần, mỗi lần 45-60 phút.",
+            "en": "Intervention process for children with autism: Step 1: Comprehensive assessment of child's current abilities, Step 2: Develop personalized intervention plan, Step 3: Implement daily intervention with family involvement, Step 4: Monitor and evaluate progress regularly, Step 5: Adjust plan based on results. Duration: 6-12 months, frequency: 3-5 times/week, 45-60 minutes each session."
+          },
+          "postType": "GUIDELINE",
+          "difficultyLevel": 4,
+          "targetAgeMinMonths": 12,
+          "targetAgeMaxMonths": 36,
+          "estimatedDurationMinutes": 60,
+          "tags": "hướng dẫn,tự kỷ,can thiệp,quy trình,chuyên sâu",
+          "isPublished": true,
+          "author": "PGS.TS. Le Van C",
+          "version": "2.1",
+          "criteriaId": 3
+        }
+      }
+    },
+    {
+      "name": "4. Ví dụ cụ thể (EXAMPLE)",
+      "description": "Bài post cung cấp ví dụ thực tế về hoạt động can thiệp",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Ví dụ hoạt động 'Trò chơi bong bóng xà phòng' cho trẻ 2-3 tuổi",
+          "content": {
+            "vi": "Hoạt động: Trò chơi bong bóng xà phòng. Mục tiêu: Phát triển kỹ năng theo dõi bằng mắt và phối hợp tay-mắt. Cách thực hiện: 1) Thổi bong bóng xà phòng, 2) Yêu cầu trẻ chỉ tay theo bong bóng, 3) Khuyến khích trẻ nói 'bong bóng' khi nhìn thấy, 4) Để trẻ cố gắng bắt bong bóng. Vật liệu: Dung dịch bong bóng xà phòng, ống thổi. Thời gian: 10-15 phút. Kết quả mong đợi: Trẻ có thể theo dõi bong bóng bằng mắt và chỉ tay.",
+            "en": "Activity: Soap bubble game. Objective: Develop eye tracking and hand-eye coordination skills. Implementation: 1) Blow soap bubbles, 2) Ask child to point at bubbles, 3) Encourage child to say 'bubble' when seeing them, 4) Let child try to catch bubbles. Materials: Soap bubble solution, bubble wand. Duration: 10-15 minutes. Expected outcome: Child can track bubbles with eyes and point at them."
+          },
+          "postType": "EXAMPLE",
+          "difficultyLevel": 2,
+          "targetAgeMinMonths": 24,
+          "targetAgeMaxMonths": 36,
+          "estimatedDurationMinutes": 15,
+          "tags": "ví dụ,trò chơi,bong bóng,vận động,thị giác",
+          "isPublished": true,
+          "author": "CN. Pham Thi D",
+          "version": "1.0",
+          "criteriaId": 4
+        }
+      }
+    },
+    {
+      "name": "5. Mẹo thực hành (TIP)",
+      "description": "Bài post chia sẻ mẹo và kinh nghiệm thực tế",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Mẹo tạo môi trường học tập hiệu quả tại nhà",
+          "content": {
+            "vi": "Mẹo tạo môi trường học tập hiệu quả: 1) Chọn không gian yên tĩnh, ít phiền nhiễu, 2) Sắp xếp đồ chơi và vật liệu học tập dễ tiếp cận, 3) Sử dụng ánh sáng tự nhiên hoặc đèn sáng, 4) Tạo góc học tập cố định cho trẻ, 5) Dán lịch trình hoạt động hàng ngày ở vị trí dễ nhìn, 6) Chuẩn bị sẵn các vật liệu cần thiết trước khi bắt đầu. Lưu ý: Môi trường cần thay đổi theo độ tuổi và nhu cầu của trẻ.",
+            "en": "Tips for creating effective learning environment at home: 1) Choose quiet space with minimal distractions, 2) Arrange toys and learning materials within easy reach, 3) Use natural light or bright lighting, 4) Create a fixed learning corner for child, 5) Post daily activity schedule in visible location, 6) Prepare necessary materials before starting. Note: Environment should adapt to child's age and needs."
+          },
+          "postType": "TIP",
+          "difficultyLevel": 1,
+          "targetAgeMinMonths": 12,
+          "targetAgeMaxMonths": 60,
+          "estimatedDurationMinutes": 5,
+          "tags": "mẹo,môi trường,học tập,gia đình,thực hành",
+          "isPublished": true,
+          "author": "ThS. Hoang Van E",
+          "version": "1.0",
+          "criteriaId": 5
+        }
+      }
+    },
+    {
+      "name": "6. Xử lý tình huống (TROUBLESHOOTING)",
+      "description": "Bài post hướng dẫn xử lý các tình huống khó khăn",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Xử lý khi trẻ không hợp tác trong buổi can thiệp",
+          "content": {
+            "vi": "Xử lý tình huống trẻ không hợp tác: 1) Dừng hoạt động và cho trẻ nghỉ ngơi 2-3 phút, 2) Thay đổi hoạt động sang trò chơi trẻ yêu thích, 3) Sử dụng lời khen và khuyến khích tích cực, 4) Giảm độ khó của hoạt động, 5) Cho trẻ lựa chọn giữa 2-3 hoạt động, 6) Nếu trẻ vẫn không hợp tác, kết thúc buổi học sớm. Nguyên nhân có thể: Trẻ mệt mỏi, đói, hoặc hoạt động quá khó. Phòng ngừa: Lên lịch học vào thời điểm trẻ tỉnh táo nhất.",
+            "en": "Handling uncooperative child during intervention: 1) Stop activity and give child 2-3 minute break, 2) Switch to child's favorite activity, 3) Use praise and positive reinforcement, 4) Reduce activity difficulty, 5) Give child choice between 2-3 activities, 6) If still uncooperative, end session early. Possible causes: Child tired, hungry, or activity too difficult. Prevention: Schedule sessions when child is most alert."
+          },
+          "postType": "TROUBLESHOOTING",
+          "difficultyLevel": 3,
+          "targetAgeMinMonths": 18,
+          "targetAgeMaxMonths": 48,
+          "estimatedDurationMinutes": 10,
+          "tags": "xử lý,tình huống,không hợp tác,khó khăn,giải quyết",
+          "isPublished": true,
+          "author": "TS. Vu Thi F",
+          "version": "1.2",
+          "criteriaId": 6
+        }
+      }
+    },
+    {
+      "name": "7. Kết luận (CONCLUSION)",
+      "description": "Bài post tổng kết và kết luận về chủ đề",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/neon/intervention-posts",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "Tổng kết về can thiệp sớm cho trẻ chậm phát triển",
+          "content": {
+            "vi": "Tổng kết can thiệp sớm: Can thiệp sớm là yếu tố quyết định trong việc hỗ trợ trẻ chậm phát triển. Các nguyên tắc chính: 1) Can thiệp càng sớm càng tốt (0-3 tuổi), 2) Cần sự tham gia tích cực của gia đình, 3) Phương pháp phải phù hợp với từng trẻ, 4) Theo dõi và đánh giá thường xuyên, 5) Phối hợp đa ngành. Kết quả: 80% trẻ được can thiệp sớm có tiến bộ đáng kể. Lưu ý: Mỗi trẻ có tốc độ phát triển khác nhau, cần kiên nhẫn và kiên trì.",
+            "en": "Summary of early intervention: Early intervention is crucial for supporting children with developmental delays. Key principles: 1) Intervene as early as possible (0-3 years), 2) Active family involvement required, 3) Methods must be individualized, 4) Regular monitoring and evaluation, 5) Multidisciplinary collaboration. Results: 80% of children receiving early intervention show significant progress. Note: Each child develops at different pace, requires patience and persistence."
+          },
+          "postType": "CONCLUSION",
+          "difficultyLevel": 4,
+          "targetAgeMinMonths": 0,
+          "targetAgeMaxMonths": 36,
+          "estimatedDurationMinutes": 15,
+          "tags": "tổng kết,kết luận,can thiệp sớm,chậm phát triển,tổng quan",
+          "isPublished": true,
+          "author": "PGS.TS. Nguyen Van G",
+          "version": "1.0",
+          "criteriaId": 7
+        }
+      }
+    }
+  ],
+  "notes": {
+    "postTypes": [
+      "INTERVENTION_METHOD - Phương pháp can thiệp",
+      "CHECKLIST - Checklist đánh giá", 
+      "GUIDELINE - Hướng dẫn quy trình",
+      "EXAMPLE - Ví dụ cụ thể",
+      "TIP - Mẹo thực hành",
+      "TROUBLESHOOTING - Xử lý tình huống",
+      "CONCLUSION - Kết luận"
+    ],
+    "difficultyLevels": [
+      "1 - Rất dễ (dành cho phụ huynh)",
+      "2 - Dễ (dành cho cộng tác viên mới)",
+      "3 - Trung bình (dành cho chuyên viên)",
+      "4 - Khó (dành cho chuyên gia)",
+      "5 - Rất khó (dành cho chuyên gia cao cấp)"
+    ],
+    "tags": "Sử dụng dấu phẩy để phân cách các tag, ví dụ: 'ngôn ngữ,phát triển,âm thanh'",
+    "content": "Trường content hỗ trợ đa ngôn ngữ với vi (tiếng Việt) và en (tiếng Anh)"
+  }
+}
