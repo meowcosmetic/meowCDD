@@ -38,8 +38,8 @@ public interface ChildNeonRepository extends JpaRepository<ChildNeon, Long> {
     @Query("SELECT c FROM ChildNeon c WHERE c.primaryLanguage = :language")
     List<ChildNeon> findByPrimaryLanguage(@Param("language") String language);
     
-    @Query("SELECT c FROM ChildNeon c WHERE c.familyDevelopmentalIssues = :issue")
-    List<ChildNeon> findByFamilyDevelopmentalIssues(@Param("issue") ChildNeon.FamilyDevelopmentalIssues issue);
+    @Query("SELECT c FROM ChildNeon c WHERE c.familyDevelopmentalIssues LIKE %:issue%")
+    List<ChildNeon> findByFamilyDevelopmentalIssues(@Param("issue") String issue);
     
     @Query("SELECT c FROM ChildNeon c WHERE c.fullName LIKE %:keyword%")
     Page<ChildNeon> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
@@ -65,8 +65,8 @@ public interface ChildNeonRepository extends JpaRepository<ChildNeon, Long> {
     @Query("SELECT c FROM ChildNeon c WHERE c.primaryLanguage = :language")
     Page<ChildNeon> findByPrimaryLanguageWithPagination(@Param("language") String language, Pageable pageable);
     
-    @Query("SELECT c FROM ChildNeon c WHERE c.familyDevelopmentalIssues = :issue")
-    Page<ChildNeon> findByFamilyDevelopmentalIssuesWithPagination(@Param("issue") ChildNeon.FamilyDevelopmentalIssues issue, Pageable pageable);
+    @Query("SELECT c FROM ChildNeon c WHERE c.familyDevelopmentalIssues LIKE %:issue%")
+    Page<ChildNeon> findByFamilyDevelopmentalIssuesWithPagination(@Param("issue") String issue, Pageable pageable);
     
     @Query("SELECT c FROM ChildNeon c WHERE c.dateOfBirth BETWEEN :startDate AND :endDate")
     Page<ChildNeon> findByDateOfBirthBetweenWithPagination(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, Pageable pageable);

@@ -63,9 +63,8 @@ public class ChildNeon extends BaseEntity {
     @Column(name = "primary_language")
     private String primaryLanguage; // Ngôn ngữ chủ yếu sử dụng trong gia đình
     
-    @Column(name = "family_developmental_issues")
-    @Enumerated(EnumType.STRING)
-    private FamilyDevelopmentalIssues familyDevelopmentalIssues; // Có ai khác trong gia đình từng có vấn đề phát triển/ngôn ngữ
+    @Column(name = "family_developmental_issues", columnDefinition = "TEXT")
+    private String familyDevelopmentalIssues; // Có ai khác trong gia đình từng có vấn đề phát triển/ngôn ngữ
     
     // Các trường thông tin cơ bản khác
     @Column(name = "height")
@@ -86,7 +85,7 @@ public class ChildNeon extends BaseEntity {
     @Column(name = "parent_id")
     private String parentId; // ID phụ huynh
     
-    @Column(name = "registration_date")
+    @Column(name = "registration_date", nullable = false)
     private LocalDateTime registrationDate; // Ngày đăng ký
     
     @Enumerated(EnumType.STRING)
@@ -101,9 +100,6 @@ public class ChildNeon extends BaseEntity {
         YES, NO, NOT_EVALUATED, UNDER_INVESTIGATION
     }
     
-    public enum FamilyDevelopmentalIssues {
-        NONE, PARENT, SIBLING, GRANDPARENT, OTHER
-    }
     
     public enum Status {
         ACTIVE, INACTIVE, SUSPENDED
@@ -115,5 +111,23 @@ public class ChildNeon extends BaseEntity {
             Period period = Period.between(dateOfBirth, LocalDate.now());
             this.currentAgeMonths = period.getYears() * 12 + period.getMonths();
         }
+    }
+    
+    @PrePersist
+    protected void onCreate() {
+        super.onCreate();
+        if (registrationDate == null) {
+            registrationDate = LocalDateTime.now();
+        }
+        if (status == null) {
+            status = Status.ACTIVE;
+        }
+        calculateCurrentAge();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        super.onUpdate();
+        calculateCurrentAge();
     }
 }

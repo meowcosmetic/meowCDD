@@ -1,0 +1,19 @@
+{
+  "assessmentCode": "ASQ-3-COMM-001",
+  "category": "Communication",
+  "version": "1.0",
+  "status": "ACTIVE",
+  "administrationType": "PARENT_REPORT",
+  "requiredQualifications": "NO_QUALIFICATION_REQUIRED",
+  "minAgeMonths": 12,
+  "maxAgeMonths": 60,
+  "estimatedDuration": 15,
+  "namesJson": {
+    "vi": "Bài đánh giá phát triển ngôn ngữ",
+    "en": "Language Development Assessment"
+  },
+  "descriptionsJson": {
+    "vi": "Đánh giá khả năng ngôn ngữ của trẻ",
+    "en": "Assess child language abilities"
+  }
+}

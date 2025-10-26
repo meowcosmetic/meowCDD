@@ -73,7 +73,7 @@ public class ChildNeonService {
         return childNeonRepository.findByPrimaryLanguage(language);
     }
 
-    public List<ChildNeon> getChildrenByFamilyDevelopmentalIssues(ChildNeon.FamilyDevelopmentalIssues issue) {
+    public List<ChildNeon> getChildrenByFamilyDevelopmentalIssues(String issue) {
         log.info("Getting children by family developmental issues: {}", issue);
         return childNeonRepository.findByFamilyDevelopmentalIssues(issue);
     }
@@ -128,7 +128,7 @@ public class ChildNeonService {
         return childNeonRepository.findByPrimaryLanguageWithPagination(language, pageable);
     }
 
-    public Page<ChildNeon> getChildrenByFamilyDevelopmentalIssuesWithPagination(ChildNeon.FamilyDevelopmentalIssues issue, Pageable pageable) {
+    public Page<ChildNeon> getChildrenByFamilyDevelopmentalIssuesWithPagination(String issue, Pageable pageable) {
         log.info("Getting children by family developmental issues: {} with pagination", issue);
         return childNeonRepository.findByFamilyDevelopmentalIssuesWithPagination(issue, pageable);
     }

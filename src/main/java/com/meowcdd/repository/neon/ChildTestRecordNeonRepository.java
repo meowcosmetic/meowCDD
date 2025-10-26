@@ -70,4 +70,21 @@ public interface ChildTestRecordNeonRepository extends JpaRepository<ChildTestRe
     
     @Query("SELECT AVG(ctr.totalScore) FROM ChildTestRecordNeon ctr WHERE ctr.testId = :testId")
     Double getAverageScoreByTestId(@Param("testId") String testId);
+    
+    @Query("SELECT DISTINCT ctr.testType FROM ChildTestRecordNeon ctr WHERE ctr.testType IS NOT NULL ORDER BY ctr.testType")
+    List<String> findDistinctCategories();
+    
+    @Query("SELECT DISTINCT ctr.testType FROM ChildTestRecordNeon ctr WHERE ctr.childId = :childId AND ctr.testType IS NOT NULL ORDER BY ctr.testType")
+    List<String> findDistinctCategoriesByChildId(@Param("childId") String childId);
+    
+    @Query("SELECT ctr FROM ChildTestRecordNeon ctr WHERE ctr.childId = :childId ORDER BY ctr.testDate DESC LIMIT 1")
+    Optional<ChildTestRecordNeon> findLatestByChildId(@Param("childId") String childId);
+    
+    @Query("SELECT ctr FROM ChildTestRecordNeon ctr WHERE ctr.childId = :childId ORDER BY ctr.testDate DESC")
+    List<ChildTestRecordNeon> findLatestByChildIdWithLimit(@Param("childId") String childId, Pageable pageable);
+    
+    @Query("SELECT DISTINCT ctr FROM ChildTestRecordNeon ctr WHERE ctr.childId = :childId AND ctr.id IN (" +
+           "SELECT MAX(ctr2.id) FROM ChildTestRecordNeon ctr2 WHERE ctr2.childId = :childId AND ctr2.testType = ctr.testType " +
+           "GROUP BY ctr2.testType) ORDER BY ctr.testDate DESC")
+    List<ChildTestRecordNeon> findLatestByChildIdAndDistinctCategory(@Param("childId") String childId);
 }

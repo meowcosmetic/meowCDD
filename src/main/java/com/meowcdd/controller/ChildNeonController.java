@@ -101,7 +101,7 @@ public class ChildNeonController {
 
     @GetMapping("/family-issues/{issue}")
     public ResponseEntity<List<ChildNeon>> getChildrenByFamilyDevelopmentalIssues(
-            @PathVariable ChildNeon.FamilyDevelopmentalIssues issue) {
+            @PathVariable String issue) {
         log.info("Getting children by family developmental issues: {}", issue);
         List<ChildNeon> children = childNeonService.getChildrenByFamilyDevelopmentalIssues(issue);
         return ResponseEntity.ok(children);

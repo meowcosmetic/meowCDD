@@ -179,4 +179,29 @@ public class ChildTestRecordNeonService {
         log.info("Getting average score by test ID: {}", testId);
         return childTestRecordNeonRepository.getAverageScoreByTestId(testId);
     }
+    
+    public List<String> getDistinctCategories() {
+        log.info("Getting distinct categories from child test records");
+        return childTestRecordNeonRepository.findDistinctCategories();
+    }
+    
+    public List<String> getDistinctCategoriesByChildId(String childId) {
+        log.info("Getting distinct categories for child ID: {}", childId);
+        return childTestRecordNeonRepository.findDistinctCategoriesByChildId(childId);
+    }
+    
+    public Optional<ChildTestRecordNeon> getLatestTestRecordByChildId(String childId) {
+        log.info("Getting latest test record for child ID: {}", childId);
+        return childTestRecordNeonRepository.findLatestByChildId(childId);
+    }
+    
+    public List<ChildTestRecordNeon> getLatestTestRecordsByChildId(String childId, Pageable pageable) {
+        log.info("Getting latest test records for child ID: {} with limit", childId);
+        return childTestRecordNeonRepository.findLatestByChildIdWithLimit(childId, pageable);
+    }
+    
+    public List<ChildTestRecordNeon> getLatestTestRecordsByChildIdAndDistinctCategory(String childId) {
+        log.info("Getting latest test records by distinct category for child ID: {}", childId);
+        return childTestRecordNeonRepository.findLatestByChildIdAndDistinctCategory(childId);
+    }
 }
