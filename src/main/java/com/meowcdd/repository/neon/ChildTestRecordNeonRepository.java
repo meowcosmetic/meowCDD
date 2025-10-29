@@ -83,8 +83,20 @@ public interface ChildTestRecordNeonRepository extends JpaRepository<ChildTestRe
     @Query("SELECT ctr FROM ChildTestRecordNeon ctr WHERE ctr.childId = :childId ORDER BY ctr.testDate DESC")
     List<ChildTestRecordNeon> findLatestByChildIdWithLimit(@Param("childId") String childId, Pageable pageable);
     
-    @Query("SELECT DISTINCT ctr FROM ChildTestRecordNeon ctr WHERE ctr.childId = :childId AND ctr.id IN (" +
-           "SELECT MAX(ctr2.id) FROM ChildTestRecordNeon ctr2 WHERE ctr2.childId = :childId AND ctr2.testType = ctr.testType " +
-           "GROUP BY ctr2.testType) ORDER BY ctr.testDate DESC")
-    List<ChildTestRecordNeon> findLatestByChildIdAndDistinctCategory(@Param("childId") String childId);
+    @Query(value = "WITH latest AS (" +
+           "SELECT *, ROW_NUMBER() OVER (PARTITION BY test_id ORDER BY test_date DESC) AS rn " +
+           "FROM child_test_records WHERE child_id = :childId" +
+           ") SELECT ctr.id, ctr.child_id, ctr.test_id, ctr.test_type, ctr.test_date, ctr.start_time, ctr.end_time, " +
+           "ctr.status, ctr.total_score, ctr.max_score, ctr.percentage_score, ctr.result_level, ctr.interpretation, " +
+           "ctr.question_answers, ctr.correct_answers, ctr.total_questions, ctr.skipped_questions, ctr.notes, " +
+           "ctr.environment, ctr.assessor, ctr.parent_present, ctr.created_at, ctr.updated_at, ct.category as test_category " +
+           "FROM latest ctr LEFT JOIN cdd_tests ct ON CAST(ctr.test_id AS INTEGER) = ct.id " +
+           "WHERE ctr.rn = 1 ORDER BY ctr.test_date DESC", nativeQuery = true)
+    List<Object[]> findLatestByChildIdAndDistinctCategoryWithTestInfo(@Param("childId") String childId);
+    
+    @Query("SELECT ctr FROM ChildTestRecordNeon ctr WHERE ctr.childId = :childId AND ctr.testType = :category ORDER BY ctr.testDate DESC LIMIT 1")
+    Optional<ChildTestRecordNeon> findLatestByChildIdAndCategory(@Param("childId") String childId, @Param("category") String category);
+    
+    @Query("SELECT ctr FROM ChildTestRecordNeon ctr WHERE ctr.childId = :childId AND ctr.testType = :category ORDER BY ctr.testDate DESC")
+    List<ChildTestRecordNeon> findLatestByChildIdAndCategoryWithLimit(@Param("childId") String childId, @Param("category") String category, Pageable pageable);
 }

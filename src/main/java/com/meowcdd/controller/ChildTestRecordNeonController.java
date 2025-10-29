@@ -1,5 +1,6 @@
 package com.meowcdd.controller;
 
+import com.meowcdd.dto.ChildTestRecordWithCategoryDto;
 import com.meowcdd.entity.neon.ChildTestRecordNeon;
 import com.meowcdd.service.ChildTestRecordNeonService;
 import lombok.RequiredArgsConstructor;
@@ -274,9 +275,29 @@ public class ChildTestRecordNeonController {
     }
     
     @GetMapping("/child/{childId}/latest-by-category")
-    public ResponseEntity<List<ChildTestRecordNeon>> getLatestTestRecordsByChildIdAndDistinctCategory(@PathVariable String childId) {
+    public ResponseEntity<List<ChildTestRecordWithCategoryDto>> getLatestTestRecordsByChildIdAndDistinctCategory(@PathVariable String childId) {
         log.info("Getting latest test records by distinct category for child ID (Neon): {}", childId);
-        List<ChildTestRecordNeon> records = childTestRecordNeonService.getLatestTestRecordsByChildIdAndDistinctCategory(childId);
+        List<ChildTestRecordWithCategoryDto> records = childTestRecordNeonService.getLatestTestRecordsByChildIdAndDistinctCategoryWithTestInfo(childId);
+        return ResponseEntity.ok(records);
+    }
+    
+    @GetMapping("/child/{childId}/category/{category}/latest")
+    public ResponseEntity<ChildTestRecordNeon> getLatestTestRecordByChildIdAndCategory(@PathVariable String childId, @PathVariable String category) {
+        log.info("Getting latest test record for child ID (Neon): {} and category: {}", childId, category);
+        Optional<ChildTestRecordNeon> record = childTestRecordNeonService.getLatestTestRecordByChildIdAndCategory(childId, category);
+        return record.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @GetMapping("/child/{childId}/category/{category}/latest/paginated")
+    public ResponseEntity<List<ChildTestRecordNeon>> getLatestTestRecordsByChildIdAndCategory(
+            @PathVariable String childId, 
+            @PathVariable String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        log.info("Getting latest test records for child ID (Neon): {} and category: {} with pagination", childId, category);
+        Pageable pageable = PageRequest.of(page, size);
+        List<ChildTestRecordNeon> records = childTestRecordNeonService.getLatestTestRecordsByChildIdAndCategory(childId, category, pageable);
         return ResponseEntity.ok(records);
     }
 }

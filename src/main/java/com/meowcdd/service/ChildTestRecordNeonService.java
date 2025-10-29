@@ -1,6 +1,6 @@
 package com.meowcdd.service;
 
-import com.meowcdd.dto.ChildTestRecordNeonDto;
+import com.meowcdd.dto.ChildTestRecordWithCategoryDto;
 import com.meowcdd.entity.neon.ChildTestRecordNeon;
 import com.meowcdd.repository.neon.ChildTestRecordNeonRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -200,8 +201,86 @@ public class ChildTestRecordNeonService {
         return childTestRecordNeonRepository.findLatestByChildIdWithLimit(childId, pageable);
     }
     
-    public List<ChildTestRecordNeon> getLatestTestRecordsByChildIdAndDistinctCategory(String childId) {
-        log.info("Getting latest test records by distinct category for child ID: {}", childId);
-        return childTestRecordNeonRepository.findLatestByChildIdAndDistinctCategory(childId);
+    public List<ChildTestRecordWithCategoryDto> getLatestTestRecordsByChildIdAndDistinctCategoryWithTestInfo(String childId) {
+        log.info("Getting latest test records by distinct category with test info for child ID: {}", childId);
+        
+        List<Object[]> results = childTestRecordNeonRepository.findLatestByChildIdAndDistinctCategoryWithTestInfo(childId);
+        
+        return results.stream().map(this::convertToDtoWithCategory).collect(Collectors.toList());
+    }
+    
+    private ChildTestRecordWithCategoryDto convertToDtoWithCategory(Object[] row) {
+        // Mapping đơn giản cho query test
+        ChildTestRecordNeon record = new ChildTestRecordNeon();
+        record.setId((Long) row[0]);
+        record.setChildId((String) row[1]);
+        record.setTestId((String) row[2]);
+        record.setTestType(ChildTestRecordNeon.TestType.valueOf((String) row[3]));
+        record.setTestDate(((Timestamp) row[4]).toLocalDateTime());
+        record.setTestDate(((Timestamp) row[5]).toLocalDateTime());
+        record.setTestDate(((Timestamp) row[6]).toLocalDateTime());
+        record.setStatus(ChildTestRecordNeon.Status.valueOf((String) row[7]));
+        record.setTotalScore((Double) row[8]);
+        record.setMaxScore((Double) row[9]);
+        record.setPercentageScore((Double) row[10]);
+        record.setResultLevel(ChildTestRecordNeon.ResultLevel.valueOf((String) row[11]));
+        record.setInterpretation((String) row[12]);
+        record.setQuestionAnswers((String) row[13]);
+        record.setCorrectAnswers((Integer) row[14]);
+        record.setTotalQuestions((Integer) row[15]);
+        record.setSkippedQuestions((Integer) row[16]);
+        record.setNotes((String) row[17]);
+        record.setEnvironment((String) row[18]);
+        record.setAssessor((String) row[19]);
+        record.setParentPresent((Boolean) row[20]);
+        record.setTestDate(((Timestamp) row[21]).toLocalDateTime());
+        record.setTestDate(((Timestamp) row[22]).toLocalDateTime());
+
+
+        // Thông tin category từ join
+        String testCategory = row.length > 23 ? (String) row[23] : null;
+        
+        return ChildTestRecordWithCategoryDto.builder()
+                .id(record.getId())
+                .childId(record.getChildId())
+                .testId(record.getTestId())
+                .testType(record.getTestType().name())
+                .testDate(record.getTestDate())
+                .startTime(record.getStartTime())
+                .endTime(record.getEndTime())
+                .status(record.getStatus().name())
+                .totalScore(record.getTotalScore())
+                .maxScore(record.getMaxScore())
+                .percentageScore(record.getPercentageScore())
+                .resultLevel(record.getResultLevel().name())
+                .interpretation(record.getInterpretation())
+                .questionAnswers(record.getQuestionAnswers())
+                .correctAnswers(record.getCorrectAnswers())
+                .totalQuestions(record.getTotalQuestions())
+                .skippedQuestions(record.getSkippedQuestions())
+                .notes(record.getNotes())
+                .environment(record.getEnvironment())
+                .assessor(record.getAssessor())
+                .parentPresent(record.getParentPresent())
+                .createdAt(record.getCreatedAt())
+                .updatedAt(record.getUpdatedAt())
+                .testCategory(testCategory)
+                .testName(null)
+                .testVersion(null)
+                .testDescription(null)
+                .minAgeMonths(null)
+                .maxAgeMonths(null)
+                .estimatedDuration(null)
+                .build();
+    }
+    
+    public Optional<ChildTestRecordNeon> getLatestTestRecordByChildIdAndCategory(String childId, String category) {
+        log.info("Getting latest test record for child ID: {} and category: {}", childId, category);
+        return childTestRecordNeonRepository.findLatestByChildIdAndCategory(childId, category);
+    }
+    
+    public List<ChildTestRecordNeon> getLatestTestRecordsByChildIdAndCategory(String childId, String category, Pageable pageable) {
+        log.info("Getting latest test records for child ID: {} and category: {} with limit", childId, category);
+        return childTestRecordNeonRepository.findLatestByChildIdAndCategoryWithLimit(childId, category, pageable);
     }
 }
